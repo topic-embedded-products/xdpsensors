@@ -1,6 +1,6 @@
 from twisted.web import server, resource, static
 from twisted.internet import reactor, endpoints
-from twisted.application import service, internet
+from twisted.application import internet
 
 class RootResource(resource.Resource):
     isLeaf = True
@@ -33,7 +33,3 @@ def getWebService():
     site = server.Site(root)
     root.putChild("favicon.ico", static.File("/var/www/favicon.ico"))
     return internet.TCPServer(80, site)
-
-application = service.Application("XDP Webserver")
-service = getWebService()
-service.setServiceParent(application)
