@@ -9,7 +9,7 @@ class RootResource(resource.Resource):
         import iio
         import iiosensors
         self.iio_ctx = iio.Context() # must be kept alive
-        self.xdp_sensors = iiosensors.create_sensor_channel_list(iio_ctx, lambda c: c.id.startswith('volt'))
+        self.xdp_sensors = iiosensors.create_sensor_channel_list(self.iio_ctx, lambda c: c.id.startswith('volt'))
     def getChild(self, name, request):
         if name == '':
             return self
