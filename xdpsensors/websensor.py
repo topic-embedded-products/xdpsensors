@@ -2,8 +2,8 @@ from twisted.web import server, resource, static
 from twisted.internet import reactor, endpoints
 from twisted.application import internet
 
-class RootResource(resource.Resource):
-    isLeaf = True
+class DynamicResource(resource.Resource):
+    #isLeaf = True
     def __init__(self):
         resource.Resource.__init__(self)
         import iio
@@ -13,23 +13,27 @@ class RootResource(resource.Resource):
     def getChild(self, name, request):
         if name == '':
             return self
-        return Resource.getChild(self, name, request)
+        return resource.Resource.getChild(self, name, request)
     def render_GET(self, request):
-        if not request.postpath[0]:
-            request.setHeader("refresh", "1");
-        request.write("<html><body>\n<table>\n")
+        request.setHeader("refresh", "1");
+        request.write('''<html><head><link rel="stylesheet" type="text/css" href="style.css"></head>\n<body><table>''')
         for s in self.xdp_sensors:
-            request.write("<tr><td>%s</td><td></td><td></td></tr>\n" % s.name.encode('utf-8'))
+            request.write("<tr><th>%s</th><td></td><td></td></tr>\n" % s.name.encode('utf-8'))
             for c in s.channels:
                 try:
                     v = c.get()
                 except OSError as e:
                     v = e.strerror
                 request.write("<td></td><td>%s</td><td>%s</td></tr>\n" % (c.name.encode('utf-8'), v))
-        return "</table>\n</body></html>\n"
+        return "</table></body></html>\n"
+
+class CachedFile(static.File):
+    def render_GET(self, request):
+        request.setHeader("cache-control", "max-age=3600, public")
+        return static.File.render_GET(self, request)
 
 def getWebService():
-    root = RootResource()
+    root = CachedFile("/var/www")
+    root.putChild("dynamic", DynamicResource())
     site = server.Site(root)
-    root.putChild("favicon.ico", static.File("/var/www/favicon.ico"))
     return internet.TCPServer(80, site)
