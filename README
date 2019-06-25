@@ -1,0 +1,43 @@
+For development, the webserver can run on a host PC.
+
+You'll need to install python-twisted first.
+
+Then clone, build and install the IIO library:
+
+  cd $HOME/projects # Or something similar
+  git clone https://github.com/analogdevicesinc/libiio.git
+  cd libiio
+  cmake .
+  make -j 8
+  sudo make install
+
+To test if this works, run:
+
+  iio_info -u ip:topic-miamimp-xilinx-xdp-xczu7ev.local
+
+This should output a bunch of sensor information.
+
+Then try this:
+
+  python xdpsensors/iiosensors.py ip:topic-miamimp-xilinx-xdp-xczu7ev.local
+
+If you get the error "ImportError: No module named iio", try this to work around
+install path issues with Ubuntu and Python:
+
+  export PYTHONPATH=/usr/lib/python2.7/site-packages
+
+Since you're not root, and things aren't quite like in release mode, set the
+following environment variables:
+
+  export PYTHONPATH="/usr/lib/python2.7/site-packages:."
+  export XDP_ROOT=.
+  export XDP_PORT=8080
+  export XDP_URI=ip:topic-miamimp-xilinx-xdp-xczu7ev.local
+
+And then run the "twistd" deamon:
+
+  twistd -n -y xdpsensors.tac
+
+If that works, direct your browser to:
+
+  http://localhost:8080/

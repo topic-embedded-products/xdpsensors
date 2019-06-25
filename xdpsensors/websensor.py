@@ -4,11 +4,11 @@ from twisted.application import internet
 
 class DynamicResource(resource.Resource):
     #isLeaf = True
-    def __init__(self):
+    def __init__(self, uri = None):
         resource.Resource.__init__(self)
         import iio
         import iiosensors
-        self.iio_ctx = iio.Context() # must be kept alive
+        self.iio_ctx = iio.Context(uri) # must be kept alive
         self.xdp_sensors = iiosensors.create_sensor_channel_list(self.iio_ctx, lambda c: c.id.startswith('volt'))
     def getChild(self, name, request):
         if name == '':
@@ -32,8 +32,8 @@ class CachedFile(static.File):
         request.setHeader("cache-control", "max-age=3600, public")
         return static.File.render_GET(self, request)
 
-def getWebService():
-    root = CachedFile("/var/www")
-    root.putChild("dynamic", DynamicResource())
+def getWebService(uri = None, port = 80, root = '/var/www'):
+    root = CachedFile(root)
+    root.putChild("dynamic", DynamicResource(uri))
     site = server.Site(root)
-    return internet.TCPServer(80, site)
+    return internet.TCPServer(port, site)
