@@ -1,4 +1,5 @@
 <!--The content below is only a placeholder and can be replaced.-->
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
 <ng-template #loading>Loading User Data...</ng-template>
 <!-->div class="example-button-row">
     <button mat-button (click)="getSensorData()">Load Data</button>
@@ -21,19 +22,19 @@
                 <p>- {{ item.key }} : {{ item.value }} </p>
             </div>
         </mat-card>
-        <mat-card>
+        <mat-card class="card">
             <mat-card-title>AMS</mat-card-title>
             <div *ngFor="let item of ams | keyvalue">
                 <p>- {{ item.key }} : {{ item.value }} </p>
             </div>
         </mat-card>
-        <mat-card>
+        <mat-card class="card">
             <mat-card-title>BMI accel</mat-card-title>
             <div *ngFor="let item of bmi088_accel?.bmi088_accel | keyvalue">
                 <p>- {{ item.key }} : {{ item.value }} </p>
             </div>
         </mat-card>
-        <mat-card>
+        <mat-card class="card">
             <mat-card-title>BME gyro</mat-card-title>
             <div *ngFor="let item of bmi088_gyro | keyvalue">
                 <p>- {{ item.key }} : {{ item.value }} </p>
