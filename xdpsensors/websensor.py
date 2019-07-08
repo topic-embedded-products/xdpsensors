@@ -1,8 +1,11 @@
 from twisted.web import server, resource, static
 from twisted.internet import reactor, endpoints
 from twisted.application import internet
+from twisted.web.server import Site
+from twisted.web.static import File
 import iio
 import iiosensors
+import json
 
 # class DynamicResource(resource.Resource):
 #     #isLeaf = True
@@ -27,7 +30,6 @@ import iiosensors
 #                 request.write("<td></td><td>%s</td><td>%s</td></tr>\n" % (c.name.encode('utf-8'), v))
 #         return "</table></body></html>\n"
 
-
 class DynamicResource(resource.Resource):
     #isLeaf = True
     def __init__(self, uri = None):
@@ -49,6 +51,8 @@ class DynamicResource(resource.Resource):
 class Bmi088AccelResource(DynamicResource):
     def render_GET(self, request):
         request.setHeader("refresh", "1");
+        request.responseHeaders.addRawHeader(b"content-type", b"application/json")
+        request.setHeader('Access-Control-Allow-Origin', '*')
         for accel in self.xdp_sensors:
             accel_name = accel.name.encode('utf-8')
             if accel_name == 'bmi088_accel':
@@ -60,13 +64,15 @@ class Bmi088AccelResource(DynamicResource):
                     except OSError as e:
                         channel_value = e.strerror
                     self.sensorDict[accel_name][channel_name] = channel_value
-        return self.sensorDict
+        app_json = json.dumps(self.sensorDict)
+        return bytes(app_json)
 
 
 class Bme680Resource(DynamicResource):
     def render_GET(self, request):
         request.setHeader("refresh", "1");
-        # self.setHeader('Access-Control-Allow-Origin', '*')
+        request.responseHeaders.addRawHeader(b"content-type", b"application/json")
+        request.setHeader('Access-Control-Allow-Origin', '*')
         # self.setHeader('Access-Control-Allow-Methods', 'GET')
         # self.setHeader('Access-Control-Allow-Headers',
         #                'x-prototype-version,x-requested-with')
@@ -83,42 +89,57 @@ class Bme680Resource(DynamicResource):
                     except OSError as e:
                         channel_value = e.strerror
                     self.sensorDict[bme680_name][channel_name] = channel_value
-        return self.sensorDict
+        app_json = json.dumps(self.sensorDict)
+        return bytes(app_json)
 
 
 class Bmi088GyroResource(DynamicResource):
     def render_GET(self, request):
         request.setHeader("refresh", "1");
+        request.responseHeaders.addRawHeader(b"content-type", b"application/json")
+        request.setHeader('Access-Control-Allow-Origin', '*')
         for gyro in self.xdp_sensors:
             gyro_name = gyro.name.encode('utf-8')
             if gyro_name == 'bmi088_gyro':
-                self.sensorDict[gyro_name] = {}
+                self.sensorDict = {}
+                #self.sensorDict[gyro_name] = {}
                 for channel in gyro.channels:
                     channel_name = channel.name.encode('utf-8')
                     try:
                         channel_value = channel.get()
                     except OSError as e:
                         channel_value = e.strerror
-                    self.sensorDict[gyro_name][channel_name] = channel_value
-        return self.sensorDict
+                    #self.sensorDict[gyro_name][channel_name] = channel_value
+                    self.sensorDict[channel_name] = channel_value
+        app_json = json.dumps(self.sensorDict)
+        return bytes(app_json)
 
-
+class VideoResource(DynamicResource):
+    def render_GET(self, request):
+		_testresource = File("../vid_test.mp4")
+		print('==============================================================')
+		print _testresource
+		print('--------------------------------------------------------------')
+		return bytes(_testresource)
+		
 class AmsResource(DynamicResource):
     def render_GET(self, request):
         request.setHeader("refresh", "1");
+        request.responseHeaders.addRawHeader(b"content-type", b"application/json")
+        request.setHeader('Access-Control-Allow-Origin', '*')
         for ams in self.xdp_sensors:
             ams_name = ams.name.encode('utf-8')
             if ams_name == 'ams':
-                self.sensorDict[ams_name] = {}
+                self.sensorDict = {}
                 for channel in ams.channels:
                     channel_name = channel.name.encode('utf-8')
                     try:
                         channel_value = channel.get()
                     except OSError as e:
                         channel_value = e.strerror
-                    self.sensorDict[ams_name][channel_name] = channel_value
-        return self.sensorDict
-
+                    self.sensorDict[channel_name] = channel_value
+        app_json = json.dumps(self.sensorDict)
+        return bytes(app_json)
 
 class CachedFile(static.File):
     def render_GET(self, request):
@@ -133,6 +154,7 @@ def getWebService(uri = None, port = 80, root = '/var/www'):
     root.putChild("bme680", Bme680Resource(uri))
     root.putChild("bmi088_gyro", Bmi088GyroResource(uri))
     root.putChild("ams", AmsResource(uri))
+    root.putChild("video", VideoResource(uri))
     site = server.Site(root)
     return internet.TCPServer(port, site)
 

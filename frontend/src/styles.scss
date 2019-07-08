@@ -1,1 +1,24 @@
 /* You can add global styles to this file, and also import other style files */
+@import "@angular/material/prebuilt-themes/deeppurple-amber.css";
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+th {
+  text-align: right;
+}
+
+#page-wrap { width: 400px; margin: 50px auto; padding: 20px; background: white; -moz-box-shadow: 0 0 20px black; -webkit-box-shadow: 0 0 20px black; box-shadow: 0 0 20px black; }
+#features { width: 600px; margin: 50px auto; float: left; font-size: 1.5em; color: white}
+
+iframe {
+  border: none;
+}
+
+.bg{
+	height:auto;
+	min-height:100vh;
+	background-image:url(src/assets/img/bg.png);
+	background-size:cover;
+	background-position:center;
+}
