@@ -9,7 +9,8 @@ from twisted.web.static import File
 
 import json
 
-motorSpeed = 0
+motorSpeed_1 = 0
+motorSpeed_2 = 0
 
 class Bme680Resource(Resource):
     isLeaf = True
@@ -56,8 +57,7 @@ class VideoResource(Resource):
         #    app_json = json.dumps(json.load(f))
         return File('vid_test.mp4')
         
-class MotorSpeedResource(Resource):
-    
+class MotorSpeedResource(Resource):    
     isLeaf = True 
     def render_GET(self, request):
         #print ("TEST 2")
@@ -65,16 +65,30 @@ class MotorSpeedResource(Resource):
         count = 0
         exists = False
         for item in request.args:
-            if item == "motorspeed":
+            if item == "motorspeed_1":
                 exists = True
                 break;
             else:
                 count += 1
         if exists:
             speedArray = request.args.values()
-            motorSpeed = speedArray[count][0]
-            print motorSpeed
-        return "{0}".format(motorSpeed) #request.args.values() keys() , values()
+            motorSpeed_1 = speedArray[count][0]
+            print motorSpeed_1
+            return "{0}".format(motorSpeed_1) #request.args.values() keys() , values()
+        count = 0
+        exists = False
+        for item in request.args:
+            if item == "motorspeed_2":
+                exists = True
+                break;
+            else:
+                count += 1
+        if exists:
+            speedArray = request.args.values()
+            motorSpeed_2 = speedArray[count][0]
+            print motorSpeed_2
+            return "{0}".format(motorSpeed_2) #request.args.values() keys() , values()
+        return "-1"
         
 import cgi
 

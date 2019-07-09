@@ -11,6 +11,7 @@ import {
   MatFormFieldModule,
   MatInputModule,
   MatRippleModule,
+  MatGridListModule,
   MatSliderModule
 } from '@angular/material';
 
@@ -22,6 +23,7 @@ import { AppComponent } from './app.component';
   ],
   imports: [
     MatCardModule,
+    MatGridListModule,
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
@@ -33,6 +35,7 @@ import { AppComponent } from './app.component';
   ],
   exports:[
     MatCardModule,
+    MatGridListModule,
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,

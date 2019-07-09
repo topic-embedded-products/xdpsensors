@@ -11,7 +11,8 @@ import {RequestOptions, Request, Headers } from '@angular/http';
 })
 export class BackendService {
 
-  localServer = "http://localhost:9990/"
+  //localServer = "http://localhost:9990/"
+  localServer = "http://192.168.80.68/"
   //private controller = "bme680"
   
   constructor(private http: HttpClient) { }
@@ -47,9 +48,9 @@ export class BackendService {
   }
 
   /** POST: send motor speed in % */
-  sendMotorSpeed (api:string, speed: number): Observable<number> {
+  sendMotorSpeed (api:string, motorType:string, speed: number): Observable<number> {
 
-    return this.http.get<number>(this.localServer+api+"?"+api+"="+speed)
+    return this.http.get<number>(this.localServer+api+"?"+motorType+"="+speed)
       .pipe(
         catchError(this.handleError('sendMotorSpeed', speed))
       );

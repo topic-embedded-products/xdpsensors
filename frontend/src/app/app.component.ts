@@ -23,8 +23,9 @@ export class AppComponent implements OnInit {
   ams_subscription: Subscription;
   bmi088_accel_subscription: Subscription;
   bmi088_gyro_subscription: Subscription;
-  subInterval = 5000; //ms
-  motorSpeed = 50;
+  subInterval = 1000; //ms
+  motorSpeed_accel = 50;
+  motorSpeed_gyro = 50;
   constructor(private backend: BackendService) {
   }
   
@@ -82,14 +83,19 @@ export class AppComponent implements OnInit {
     .subscribe(
       data => {
         this.bmi088_gyro = data
-        //console.log(this.bmi_gyro)
+        //console.log(this.bmi088_gyro)
       }
     )
   }
 
-  onInputChange(event: MatSliderChange) {
-    this.motorSpeed = event.value;
-    this.backend.sendMotorSpeed("motorspeed",this.motorSpeed).subscribe()
+  onGyroChange(event: MatSliderChange) {
+    this.motorSpeed_gyro = event.value;
+    this.backend.sendMotorSpeed("motorspeed", "motorspeed_1",this.motorSpeed_gyro).subscribe()
+  }
+
+  onAccelChange(event: MatSliderChange) {
+    this.motorSpeed_accel = event.value;
+    this.backend.sendMotorSpeed("motorspeed", "motorspeed_1",this.motorSpeed_accel).subscribe()
   }
 
 

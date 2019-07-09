@@ -1,6 +1,70 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
 <ng-template #loading>Loading User Data...</ng-template>
+<mat-grid-list cols="10" rowHeight="1.5:1">
+    <mat-grid-tile [colspan]="3" [rowspan]="5">
+            <mat-card class="video-card">
+                <h2>Video live</h2>
+                <video width="400" controls>
+                    <source src="{{ backend.localServer }}video" type="video/mp4">
+                    <source src="{{ backend.localServer }}video" type="video/ogg">
+                    Your browser does not support HTML5 video.
+                </video>
+            </mat-card></mat-grid-tile>
+    <mat-grid-tile [colspan]="2" [rowspan]="1">
+        <mat-card>
+            <mat-card-title>Accel Speed: {{motorSpeed_accel}}</mat-card-title>
+            <div>
+                <mat-slider min="0" max="100" step="1" (input)="onAccelChange($event)" value={{motorSpeed_accel}}>
+                </mat-slider>
+            </div>
+        </mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="2" [rowspan]="1">
+        <mat-card>
+            <mat-card-title>Gyro Speed: {{motorSpeed_gyro}}</mat-card-title>
+            <div>
+                <mat-slider min="0" max="100" step="1" (input)="onGyroChange($event)" value={{motorSpeed_gyro}}>
+                </mat-slider>
+            </div>
+        </mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="3" [rowspan]="5"></mat-grid-tile>
+    <mat-grid-tile [colspan]="2" [rowspan]="2">
+        <mat-card class="card">
+            <mat-card-title>BME</mat-card-title>
+            <div *ngFor="let item of bme?.bme680 | keyvalue">
+                <p>- {{ item.key }} : {{ item.value }} </p>
+            </div>
+        </mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="2" [rowspan]="2">
+        <mat-card class="card">
+            <mat-card-title>AMS</mat-card-title>
+            <div *ngFor="let item of ams?.ams | keyvalue">
+                <p>- {{ item.key }} : {{ item.value }} </p>
+            </div>
+        </mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="2" [rowspan]="2">
+        <mat-card class="card">
+            <mat-card-title>BMI accel</mat-card-title>
+            <div *ngFor="let item of bmi088_accel?.bmi088_accel | keyvalue">
+                <p>- {{ item.key }} : {{ item.value }} </p>
+            </div>
+        </mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="2" [rowspan]="2">
+        <mat-card class="card">
+            <mat-card-title>BMI gyro</mat-card-title>
+            <div *ngFor="let item of bmi088_gyro?.bmi088_gyro | keyvalue">
+                <p>- {{ item.key }} : {{ item.value }} </p>
+            </div>
+        </mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="1" [rowspan]="1"></mat-grid-tile>
+</mat-grid-list>
+<!--
 <div class="example-button-row">
     <button mat-button (click)="getSensorData()">Load Data</button>
 </div>
@@ -51,3 +115,4 @@
         Your browser does not support HTML5 video.
     </video>
 </mat-card>
+-->

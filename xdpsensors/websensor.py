@@ -7,6 +7,9 @@ import iio
 import iiosensors
 import json
 
+motorSpeed_1 = 0
+motorSpeed_2 = 0
+
 # class DynamicResource(resource.Resource):
 #     #isLeaf = True
 #     def __init__(self, uri = None):
@@ -73,11 +76,6 @@ class Bme680Resource(DynamicResource):
         request.setHeader("refresh", "1");
         request.responseHeaders.addRawHeader(b"content-type", b"application/json")
         request.setHeader('Access-Control-Allow-Origin', '*')
-        # self.setHeader('Access-Control-Allow-Methods', 'GET')
-        # self.setHeader('Access-Control-Allow-Headers',
-        #                'x-prototype-version,x-requested-with')
-        # self.setHeader('Access-Control-Max-Age', 2520)
-        # self.setHeader('Content-type', 'application/json')
         for bme680 in self.xdp_sensors:
             bme680_name = bme680.name.encode('utf-8')
             if bme680_name == 'bme680':
@@ -102,25 +100,50 @@ class Bmi088GyroResource(DynamicResource):
             gyro_name = gyro.name.encode('utf-8')
             if gyro_name == 'bmi088_gyro':
                 self.sensorDict = {}
-                #self.sensorDict[gyro_name] = {}
+                self.sensorDict[gyro_name] = {}
                 for channel in gyro.channels:
                     channel_name = channel.name.encode('utf-8')
                     try:
                         channel_value = channel.get()
                     except OSError as e:
                         channel_value = e.strerror
-                    #self.sensorDict[gyro_name][channel_name] = channel_value
+                    self.sensorDict[gyro_name][channel_name] = channel_value
                     self.sensorDict[channel_name] = channel_value
         app_json = json.dumps(self.sensorDict)
         return bytes(app_json)
 
-class VideoResource(DynamicResource):
+class MotorSpeedResource(DynamicResource):    
+    isLeaf = True 
     def render_GET(self, request):
-		_testresource = File("../vid_test.mp4")
-		print('==============================================================')
-		print _testresource
-		print('--------------------------------------------------------------')
-		return bytes(_testresource)
+        #print ("TEST 2")
+        request.setHeader('Access-Control-Allow-Origin', '*')
+        count = 0
+        exists = False
+        for item in request.args:
+            if item == "motorspeed_1":
+                exists = True
+                break;
+            else:
+                count += 1
+        if exists:
+            speedArray = request.args.values()
+            motorSpeed_1 = speedArray[count][0]
+            print motorSpeed_1
+            return "{0}".format(motorSpeed_1) #request.args.values() keys() , values()
+        count = 0
+        exists = False
+        for item in request.args:
+            if item == "motorspeed_2":
+                exists = True
+                break;
+            else:
+                count += 1
+        if exists:
+            speedArray = request.args.values()
+            motorSpeed_2 = speedArray[count][0]
+            print motorSpeed_2
+            return "{0}".format(motorSpeed_2) #request.args.values() keys() , values()
+        return "-1"
 		
 class AmsResource(DynamicResource):
     def render_GET(self, request):
@@ -131,12 +154,14 @@ class AmsResource(DynamicResource):
             ams_name = ams.name.encode('utf-8')
             if ams_name == 'ams':
                 self.sensorDict = {}
+                self.sensorDict[ams_name] = {}
                 for channel in ams.channels:
                     channel_name = channel.name.encode('utf-8')
                     try:
                         channel_value = channel.get()
                     except OSError as e:
                         channel_value = e.strerror
+                    self.sensorDict[ams_name][channel_name] = channel_value
                     self.sensorDict[channel_name] = channel_value
         app_json = json.dumps(self.sensorDict)
         return bytes(app_json)
@@ -154,7 +179,8 @@ def getWebService(uri = None, port = 80, root = '/var/www'):
     root.putChild("bme680", Bme680Resource(uri))
     root.putChild("bmi088_gyro", Bmi088GyroResource(uri))
     root.putChild("ams", AmsResource(uri))
-    root.putChild("video", VideoResource(uri))
+    root.putChild("motorspeed", MotorSpeedResource(uri))
+    root.putChild("video", File('/media/mmcblk1p3/vid_test.mp4'))
     site = server.Site(root)
     return internet.TCPServer(port, site)
 
