@@ -5,7 +5,6 @@ import 'rxjs/add/operator/map'
 import { Subscription, timer, pipe, from } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import {MatSliderChange} from '@angular/material'
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -24,21 +23,22 @@ export class AppComponent implements OnInit {
   ams_subscription: Subscription;
   bmi088_accel_subscription: Subscription;
   bmi088_gyro_subscription: Subscription;
+  subInterval = 5000; //ms
   motorSpeed = 50;
   constructor(private backend: BackendService) {
   }
   
   ngOnInit(): void {
-    this.bme680_subscription = timer(0, 1000).pipe(
+    this.bme680_subscription = timer(0, this.subInterval).pipe(
       switchMap(() => this.backend.getSensorData<BME680[]>("bme680"))
     ).subscribe(result => this.bme = result);
-    this.ams_subscription = timer(0, 1000).pipe(
+    this.ams_subscription = timer(0, this.subInterval).pipe(
       switchMap(() => this.backend.getSensorData<AMS[]>("ams"))
     ).subscribe(result => this.ams = result);
-    this.bmi088_accel_subscription = timer(0, 1000).pipe(
+    this.bmi088_accel_subscription = timer(0, this.subInterval).pipe(
       switchMap(() => this.backend.getSensorData<BMI088_ACCEL[]>("bmi088_accel"))
     ).subscribe(result => this.bmi088_accel = result);
-    this.bmi088_gyro_subscription = timer(0, 1000).pipe(
+    this.bmi088_gyro_subscription = timer(0, this.subInterval).pipe(
       switchMap(() => this.backend.getSensorData<BMI088_GYRO[]>("bmi088_gyro"))
     ).subscribe(result => this.bmi088_gyro = result);
   }
@@ -89,6 +89,7 @@ export class AppComponent implements OnInit {
 
   onInputChange(event: MatSliderChange) {
     this.motorSpeed = event.value;
+    this.backend.sendMotorSpeed("motorspeed",this.motorSpeed).subscribe()
   }
 
 

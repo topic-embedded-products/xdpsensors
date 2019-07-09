@@ -15,12 +15,10 @@ import {
 } from '@angular/material';
 
 import { AppComponent } from './app.component';
-import { VideoComponent } from './video/video.component';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    VideoComponent
+    AppComponent
   ],
   imports: [
     MatCardModule,

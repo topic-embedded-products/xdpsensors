@@ -1,9 +1,9 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
 <ng-template #loading>Loading User Data...</ng-template>
-<!-->div class="example-button-row">
+<div class="example-button-row">
     <button mat-button (click)="getSensorData()">Load Data</button>
-</div-->
+</div>
 
 <div class="card">
     <mat-card>
@@ -24,7 +24,7 @@
         </mat-card>
         <mat-card class="card">
             <mat-card-title>AMS</mat-card-title>
-            <div *ngFor="let item of ams | keyvalue">
+            <div *ngFor="let item of ams?.ams | keyvalue">
                 <p>- {{ item.key }} : {{ item.value }} </p>
             </div>
         </mat-card>
@@ -36,10 +36,18 @@
         </mat-card>
         <mat-card class="card">
             <mat-card-title>BME gyro</mat-card-title>
-            <div *ngFor="let item of bmi088_gyro | keyvalue">
+            <div *ngFor="let item of bmi088_gyro?.bmi088_gyro | keyvalue">
                 <p>- {{ item.key }} : {{ item.value }} </p>
             </div>
         </mat-card>
     </div>
 </div>
-<app-video></app-video>
+
+<mat-card class="card">
+    <h2>Video live</h2>
+    <video width="400" controls>
+        <source src="{{ backend.localServer }}video" type="video/mp4">
+        <source src="{{ backend.localServer }}video" type="video/ogg">
+        Your browser does not support HTML5 video.
+    </video>
+</mat-card>

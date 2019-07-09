@@ -4,13 +4,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {Observable, of} from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
+import {RequestOptions, Request, Headers } from '@angular/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BackendService {
 
-  private localServer = "http://localhost:8080/"
+  localServer = "http://localhost:9990/"
   //private controller = "bme680"
   
   constructor(private http: HttpClient) { }
@@ -46,10 +47,11 @@ export class BackendService {
   }
 
   /** POST: send motor speed in % */
-  sendMotorSpeed (speed: number): Observable<number> {
-    return this.http.post<number>(this.localServer, speed)
+  sendMotorSpeed (api:string, speed: number): Observable<number> {
+
+    return this.http.get<number>(this.localServer+api+"?"+api+"="+speed)
       .pipe(
-        catchError(this.handleError('addHero', speed))
+        catchError(this.handleError('sendMotorSpeed', speed))
       );
   }
 

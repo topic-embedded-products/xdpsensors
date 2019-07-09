@@ -1,0 +1,7 @@
+{ "bmi088_accel":
+     { "accel_z": 123,
+       "accel_x": 456,
+       "accel_y": 789,
+       "temp": 1
+     }
+}
