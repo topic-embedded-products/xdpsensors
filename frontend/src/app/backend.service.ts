@@ -11,8 +11,8 @@ import {RequestOptions, Request, Headers } from '@angular/http';
 })
 export class BackendService {
 
-  //localServer = "http://localhost:9990/"
-  localServer = "http://192.168.80.68/"
+  localServer = "http://localhost:9990/"
+  //localServer = "http://192.168.80.68/"
   //private controller = "bme680"
   
   constructor(private http: HttpClient) { }

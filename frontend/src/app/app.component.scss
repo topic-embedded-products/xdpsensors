@@ -1,22 +1,35 @@
 .section {
-    display: flex;
-    align-content: center;
-    align-items: center;
-    height: 60px;
-    margin: 10px;
-  }
+  display: flex;
+  align-content: center;
+  align-items: center;
+  height: 60px;
+  margin: 10px;
+}
 
-  .main-div{
-    height: 60vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+.main-div{
+  height: 60vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  .card {
-    justify-content: center;
-    align-items: center;
-    max-width: 300px;
-    min-width: 200px;
-    min-height: 200px;
-  }
+.card {
+  justify-content: center;
+  align-items: center;
+  max-width: 300px;
+  min-width: 200px;
+  min-height: 200px;
+}  
+
+.grid-data{
+	background: whitesmoke;
+	border: 3px;
+	border-color: black;
+}
+.data-row{
+  display: inline-block;
+  flex-direction: row;
+  justify-content: stretch;
+  align-items: stretch;
+  flex: 1;
+}
