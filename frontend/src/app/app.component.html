@@ -1,84 +1,58 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
 <ng-template #loading>Loading User Data...</ng-template>
-<mat-grid-list cols="10" rowHeight="1.5:1">
+<mat-card class="card">
+    <mat-card-content>
+        <div class="wrapper">
+            <div class="video-card">
+                <h2>Video live</h2>
+                <video width="720" controls>
+                    <source src="{{ backend.localServer }}video" type="video/mp4">
+                    <source src="{{ backend.localServer }}video" type="video/ogg">
+                    Your browser does not support HTML5 video.
+                </video>
 
-    <mat-grid-tile [colspan]="3" [rowspan]="5">
-        <mat-card class="video-card">
-            <h2>Video live</h2>
-            <video width="400" controls>
-                <source src="{{ backend.localServer }}video" type="video/mp4">
-                <source src="{{ backend.localServer }}video" type="video/ogg">
-                Your browser does not support HTML5 video.
-            </video>
-        </mat-card>
-    </mat-grid-tile>
-
-    <mat-grid-tile [colspan]="2" [rowspan]="1">
-        <mat-card>
-            <mat-card-title>Accel Speed: {{motorSpeed_accel}}</mat-card-title>
-            <div>
-                <mat-slider min="0" max="100" step="1" (input)="onAccelChange($event)" value={{motorSpeed_accel}}>
-                </mat-slider>
+                <div class="">
+                    <h2>Motor settings</h2>
+                    <div>
+                        <label>Accel Speed: {{motorSpeed_accel}}</label>
+                        <mat-slider min="0" max="100" step="1" (input)="onAccelChange($event)"
+                            value={{motorSpeed_accel}}>
+                        </mat-slider>
+                    </div>
+                    <div>
+                        <label>Gyro Speed: {{motorSpeed_gyro}}</label>
+                        <mat-slider min="0" max="100" step="1" (input)="onGyroChange($event)" value={{motorSpeed_gyro}}>
+                        </mat-slider>
+                    </div>
+                </div>
             </div>
-        </mat-card>
-    </mat-grid-tile>
-
-    <mat-grid-tile [colspan]="2" [rowspan]="1">
-        <mat-card>
-            <mat-card-title>Gyro Speed: {{motorSpeed_gyro}}</mat-card-title>
-            <div>
-                <mat-slider min="0" max="100" step="1" (input)="onGyroChange($event)" value={{motorSpeed_gyro}}>
-                </mat-slider>
-            </div>
-        </mat-card>
-    </mat-grid-tile>
-
-    <mat-grid-tile [colspan]="3" [rowspan]="5"></mat-grid-tile>
-
-    <mat-grid-tile [colspan]="2" [rowspan]="2" class="grid-data" [style.border]="'3px solid black'">
-        <mat-grid-tile-header>
-            <h3>BME</h3>
-        </mat-grid-tile-header>
-        <div class="row">
-            <div *ngFor="let item of bme?.bme680 | keyvalue" class="col-4">
-                {{ item.key }} : {{ item.value }}
-            </div>
-        </div>
-    </mat-grid-tile>
-
-    <mat-grid-tile [colspan]="2" [rowspan]="2" class="grid-data" [style.border]="'3px solid black'">
-        <mat-grid-tile-header>
-            <h3>AMS</h3>
-        </mat-grid-tile-header>
-        <div class="row">
-            <div *ngFor="let item of ams?.ams | keyvalue" class="col-4">
-                {{ item.key }} : {{ item.value }}
+            <div class="sensor">
+                <div>
+                    <h2>BMI accel</h2>
+                    <div *ngFor="let item of bmi088_accel?.bmi088_accel | keyvalue">
+                        {{ item.key }} : {{ item.value }}
+                    </div>
+                </div>
+                <div>
+                    <h2>BME</h2>
+                    <div *ngFor="let item of bme?.bme680 | keyvalue">
+                        {{ item.key }} : {{ item.value }}
+                    </div>
+                </div>
+                <div>
+                    <h2>BMI gyro</h2>
+                    <div *ngFor="let item of bmi088_gyro?.bmi088_gyro | keyvalue">
+                        {{ item.key }} : {{ item.value }}
+                    </div>
+                </div>
+                <div>
+                    <h2>AMS</h2>
+                    <div *ngFor="let item of ams?.ams | keyvalue">
+                        {{ item.key }} : {{ item.value }}
+                    </div>
+                </div>
             </div>
         </div>
-    </mat-grid-tile>
-
-    <mat-grid-tile [colspan]="2" [rowspan]="2" class="grid-data" [style.border]="'3px solid black'">
-        <mat-grid-tile-header>
-            <h3>BMI accel</h3>
-        </mat-grid-tile-header>
-        <div class="row">
-            <div *ngFor="let item of bmi088_accel?.bmi088_accel | keyvalue" class="col-4">
-                {{ item.key }} : {{ item.value }}
-            </div>
-        </div>
-    </mat-grid-tile>
-
-    <mat-grid-tile [colspan]="2" [rowspan]="2" class="grid-data" [style.border]="'3px solid black'">
-        <mat-grid-tile-header>
-            <h3>BMI gyro</h3>
-        </mat-grid-tile-header>
-        <div class="row">
-            <div *ngFor="let item of bmi088_gyro?.bmi088_gyro | keyvalue" class="col-4">
-                {{ item.key }} : {{ item.value }}
-            </div>
-        </div>
-    </mat-grid-tile>
-
-    <mat-grid-tile [colspan]="1" [rowspan]="1"></mat-grid-tile>
-</mat-grid-list>
+    </mat-card-content>
+</mat-card>>
