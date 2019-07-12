@@ -15,14 +15,15 @@
                 <div class="">
                     <h2>Motor settings</h2>
                     <div>
-                        <label>Accel Speed: {{motorSpeed_accel}}</label>
+                        <label class="motor-label-width">Accel Speed: {{motorSpeed_accel}}</label>
                         <mat-slider min="0" max="100" step="1" (input)="onAccelChange($event)"
-                            value={{motorSpeed_accel}}>
+                            value={{motorSpeed_accel}} class="motor-slider-length">
                         </mat-slider>
                     </div>
                     <div>
-                        <label>Gyro Speed: {{motorSpeed_gyro}}</label>
-                        <mat-slider min="0" max="100" step="1" (input)="onGyroChange($event)" value={{motorSpeed_gyro}}>
+                        <label class="motor-label-width">Gyro Speed: {{motorSpeed_gyro}}</label>
+                        <mat-slider min="0" max="100" step="1" (input)="onGyroChange($event)" 
+                            value={{motorSpeed_gyro}} class="motor-slider-length">
                         </mat-slider>
                     </div>
                 </div>
