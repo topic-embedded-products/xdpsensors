@@ -1,7 +1,7 @@
 { "bme680": 
-    {   "humidityrelative": 123, 
+    {   "humidityrelative": 0, 
         "pressure": 456, 
-        "resistance": 789, 
+        "resistance": 100000, 
         "temp": 0 
         }
 }

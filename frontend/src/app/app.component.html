@@ -22,19 +22,13 @@
                     </div>
                     <div>
                         <label class="motor-label-width">Gyro Speed: {{motorSpeed_gyro}}</label>
-                        <mat-slider min="0" max="100" step="1" (input)="onGyroChange($event)" 
-                            value={{motorSpeed_gyro}} class="motor-slider-length">
+                        <mat-slider min="0" max="100" step="1" (input)="onGyroChange($event)" value={{motorSpeed_gyro}}
+                            class="motor-slider-length">
                         </mat-slider>
                     </div>
                 </div>
             </div>
             <div class="sensor">
-                <div>
-                    <h2>BMI accel</h2>
-                    <div *ngFor="let item of bmi088_accel?.bmi088_accel | keyvalue">
-                        {{ item.key }} : {{ item.value }}
-                    </div>
-                </div>
                 <div>
                     <h2>BME</h2>
                     <div *ngFor="let item of bme?.bme680 | keyvalue">
@@ -42,9 +36,15 @@
                     </div>
                 </div>
                 <div>
+                    <h2>BMI accel</h2>
+                    <div class="accel-chart">
+                        <canvas #accelChart></canvas>
+                    </div>
+                </div>
+                <div>
                     <h2>BMI gyro</h2>
-                    <div *ngFor="let item of bmi088_gyro?.bmi088_gyro | keyvalue">
-                        {{ item.key }} : {{ item.value }}
+                    <div class="gyro-chart">
+                        <canvas #gyroChart></canvas>
                     </div>
                 </div>
                 <div>
@@ -56,4 +56,5 @@
             </div>
         </div>
     </mat-card-content>
-</mat-card>>
+</mat-card>
+<!-- <button mat-raised-button color="warn" (click)="chartUpdate()">ExecuteTest</button> -->

@@ -1,7 +1,5 @@
-{ "bmi088_gyro":
-    {   "anglvel_y": 123, 
-        "anglvel_x": 456, 
-        "anglvel_z": 789, 
-        "temp": 3 
-    }
+{   "anglvel_y": 123, 
+    "anglvel_x": -120, 
+    "anglvel_z": 220, 
+    "temp": 3 
 }

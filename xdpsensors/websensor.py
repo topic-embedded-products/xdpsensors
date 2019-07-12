@@ -59,14 +59,16 @@ class Bmi088AccelResource(DynamicResource):
         for accel in self.xdp_sensors:
             accel_name = accel.name.encode('utf-8')
             if accel_name == 'bmi088_accel':
-                self.sensorDict[accel_name] = {}
+                self.sensorDict = {}
+                #self.sensorDict[accel_name] = {}
                 for channel in accel.channels:
                     channel_name = channel.name.encode('utf-8')
                     try:
                         channel_value = channel.get()
                     except OSError as e:
                         channel_value = e.strerror
-                    self.sensorDict[accel_name][channel_name] = channel_value
+                    self.sensorDict[channel_name] = channel_value
+                    #self.sensorDict[accel_name][channel_name] = channel_value
         app_json = json.dumps(self.sensorDict)
         return bytes(app_json)
 
@@ -79,14 +81,16 @@ class Bme680Resource(DynamicResource):
         for bme680 in self.xdp_sensors:
             bme680_name = bme680.name.encode('utf-8')
             if bme680_name == 'bme680':
-                self.sensorDict[bme680_name] = {}
+                self.sensorDict = {}
+                #self.sensorDict[bme680_name] = {}
                 for channel in bme680.channels:
                     channel_name = channel.name.encode('utf-8')
                     try:
                         channel_value = channel.get()
                     except OSError as e:
                         channel_value = e.strerror
-                    self.sensorDict[bme680_name][channel_name] = channel_value
+                    self.sensorDict[channel_name] = channel_value
+                    #self.sensorDict[bme680_name][channel_name] = channel_value
         app_json = json.dumps(self.sensorDict)
         return bytes(app_json)
 
@@ -100,14 +104,14 @@ class Bmi088GyroResource(DynamicResource):
             gyro_name = gyro.name.encode('utf-8')
             if gyro_name == 'bmi088_gyro':
                 self.sensorDict = {}
-                self.sensorDict[gyro_name] = {}
+                #self.sensorDict[gyro_name] = {}
                 for channel in gyro.channels:
                     channel_name = channel.name.encode('utf-8')
                     try:
                         channel_value = channel.get()
                     except OSError as e:
                         channel_value = e.strerror
-                    self.sensorDict[gyro_name][channel_name] = channel_value
+                    #self.sensorDict[gyro_name][channel_name] = channel_value
                     self.sensorDict[channel_name] = channel_value
         app_json = json.dumps(self.sensorDict)
         return bytes(app_json)
@@ -154,14 +158,14 @@ class AmsResource(DynamicResource):
             ams_name = ams.name.encode('utf-8')
             if ams_name == 'ams':
                 self.sensorDict = {}
-                self.sensorDict[ams_name] = {}
+                #self.sensorDict[ams_name] = {}
                 for channel in ams.channels:
                     channel_name = channel.name.encode('utf-8')
                     try:
                         channel_value = channel.get()
                     except OSError as e:
                         channel_value = e.strerror
-                    self.sensorDict[ams_name][channel_name] = channel_value
+                    #self.sensorDict[ams_name][channel_name] = channel_value
                     self.sensorDict[channel_name] = channel_value
         app_json = json.dumps(self.sensorDict)
         return bytes(app_json)
