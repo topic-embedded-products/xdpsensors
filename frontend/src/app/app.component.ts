@@ -6,17 +6,31 @@ import { Subscription, timer, pipe, from } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { MatSliderChange } from '@angular/material'
 import { Chart } from 'chart.js';
+import { trigger, state, style, animate, transition } from '@angular/animations';
+import {AnimationBuilder} from '@angular/animations';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  animations: [
+    // Each unique animation requires its own trigger. The first argument of the trigger function is the name
+    trigger('rotatedState', [
+      //state('*', style({ transform: "rotate({{ percentage }})"}), { params: { percentage: 0 } }),
+      //state('default', style({ transform: 'rotate(0)' })),
+      state('*', style({ transform: 'rotate({{ degparam }}deg)' }), { params: { degparam: 180 } }),
+      transition('* => *', animate('250ms ease-in')),
+      //transition('default => rotated', animate('200ms ease-in'))
+    ])
+  ]
 })
+
 
 export class AppComponent implements OnInit {
 
   title = 'drone-frontend';
   private sensorData: Observable<any>
-  private bme: BME680[];
+  private bme: BME680;
   private ams: AMS[];
   private bmi088_accel: BMI088_ACCEL;
   private bmi088_gyro: BMI088_GYRO;
@@ -28,8 +42,10 @@ export class AppComponent implements OnInit {
   subInterval = 1000; //ms
   motorSpeed_accel = 50;
   motorSpeed_gyro = 50;
-
-
+  imagepath = "assets/img/com_ts.png"
+  arrowPath = "assets/img/red_arrow.png"
+  state: string = 'default';
+  
   @ViewChild("accelChart", { static: false })
   public refAccelChart: ElementRef;
   public accelChartData: any = {};
@@ -40,15 +56,24 @@ export class AppComponent implements OnInit {
   public gyroChartData: any = {};
   private gyroChart: Chart;
 
-  constructor(private backend: BackendService) {
+  @ViewChild("imageContainer", { static: false }) imageContainerElement: ElementRef;
+  rotationAngle:number;    
+
+  constructor(private backend: BackendService, private animationBuilder: AnimationBuilder) {
     this.accelChartData = {};
     this.gyroChartData = {};
   }
 
   ngOnInit(): void {
-    this.bme680_subscription = timer(0, this.subInterval).pipe(
-      switchMap(() => this.backend.getSensorData<BME680[]>("bme680"))
-    ).subscribe(result => this.bme = result);
+    this.rotationAngle = 0;
+    this.bme680_subscription = timer(0, this.subInterval)
+      .pipe(
+        switchMap(() => this.backend.getSensorData<BME680>("bme680")))
+      .subscribe(result => {
+        this.bme = result;
+        this.rotationAngle = this.bme.resistance;
+        this.rotateCompass();
+      });
 
     this.ams_subscription = timer(0, this.subInterval).pipe(
       switchMap(() => this.backend.getSensorData<AMS[]>("ams"))
@@ -117,9 +142,15 @@ export class AppComponent implements OnInit {
   }
 
   public ngAfterViewInit() {
+
+    // this.bme.humidityrelative = 0;
+    // this.bme.pressure = 0;
+    // this.bme.resistance = 0;
+    // this.bme.temp = 0;
+
     let chart = this.refAccelChart.nativeElement;
     let ctx = chart.getContext("2d");
-    this.accelChart = new Chart(ctx, {
+    this.accelChart = new Chart(chart, {
       type: 'bar',
       data: this.accelChartData,
       options: {
@@ -176,7 +207,7 @@ export class AppComponent implements OnInit {
     return JSON.stringify(obj);
   }
   getSensorData() {
-    this.backend.getSensorData<BME680[]>("bme680")
+    this.backend.getSensorData<BME680>("bme680")
       .subscribe(
         data => {
           this.bme = data
@@ -217,6 +248,16 @@ export class AppComponent implements OnInit {
   onAccelChange(event: MatSliderChange) {
     this.motorSpeed_accel = event.value;
     this.backend.sendMotorSpeed("motorspeed", "motorspeed_1", this.motorSpeed_accel).subscribe()
+  }
+
+  rotateCompass() {
+    //this.state = (this.state === 'default' ? 'rotated' : 'default');
+    //this.rotationAngle = (this.rotationAngle+10) % 360;
+    let animationFactory = this.animationBuilder.build([
+      style('*'),
+      animate('500ms', style({transform: 'rotate(-' + this.rotationAngle + 'deg)'}))
+    ]);
+    animationFactory.create(this.imageContainerElement.nativeElement).play();
   }
 
 

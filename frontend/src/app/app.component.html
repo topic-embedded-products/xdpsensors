@@ -30,31 +30,43 @@
             </div>
             <div class="sensor">
                 <div>
-                    <h2>BME</h2>
-                    <div *ngFor="let item of bme?.bme680 | keyvalue">
+                    <h2>General</h2>
+                    <!--div *ngFor="let item of bme | keyvalue">
                         {{ item.key }} : {{ item.value }}
+                    </div-->
+                    <div>
+                        Humidity: {{ bme?.humidityrelative }}%
+                    </div>
+                    <div>
+                        Pressure: {{ bme?.pressure }}
+                    </div>
+                    <div>
+                        Temperature: {{ bme?.temp }} &#8451;
                     </div>
                 </div>
                 <div>
-                    <h2>BMI accel</h2>
+                    <h2>Acceleration</h2>
                     <div class="accel-chart">
                         <canvas #accelChart></canvas>
                     </div>
                 </div>
                 <div>
-                    <h2>BMI gyro</h2>
+                    <h2>Gyroscope</h2>
                     <div class="gyro-chart">
                         <canvas #gyroChart></canvas>
                     </div>
                 </div>
                 <div>
-                    <h2>AMS</h2>
-                    <div *ngFor="let item of ams?.ams | keyvalue">
-                        {{ item.key }} : {{ item.value }}
+                    <h2>Compass</h2>
+                    <h4 class="bearing">{{rotationAngle}}&deg;</h4>
+                    <div class="bearing" #imageContainer class="image-com">
+                        <img [src]=imagepath>
                     </div>
+                    <!--img [src]=arrowPath-->
+
                 </div>
             </div>
         </div>
     </mat-card-content>
 </mat-card>
-<!-- <button mat-raised-button color="warn" (click)="chartUpdate()">ExecuteTest</button> -->
+<button mat-raised-button color="warn" (click)="rotateCompass()">ExecuteTest</button>

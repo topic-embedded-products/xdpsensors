@@ -3,6 +3,8 @@ import { NgModule } from '@angular/core';
 import {HttpModule} from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { GestureConfig } from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 import {
   MatCardModule, 
@@ -22,6 +24,7 @@ import { AppComponent } from './app.component';
     AppComponent
   ],
   imports: [
+    BrowserAnimationsModule,
     MatCardModule,
     MatGridListModule,
     MatButtonModule,

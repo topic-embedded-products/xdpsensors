@@ -57,7 +57,7 @@ export class BackendService {
   }
 
 }
-export class BME680 {
+export interface BME680 {
   humidityrelative: number;
   pressure: number;
   resistance: number;
