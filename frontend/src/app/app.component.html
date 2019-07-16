@@ -12,28 +12,20 @@
                     Your browser does not support HTML5 video.
                 </video>
 
-                <div class="">
-                    <h2>Motor settings</h2>
-                    <div>
-                        <label class="motor-label-width">Accel Speed: {{motorSpeed_accel}}</label>
-                        <mat-slider min="0" max="100" step="1" (input)="onAccelChange($event)"
-                            value={{motorSpeed_accel}} class="motor-slider-length">
-                        </mat-slider>
+                <div>
+                        <h2>Compass</h2>
+                        <h4 class="bearing">{{rotationAngle}}&deg;</h4>
+                        <div #imageContainer class="image-com">
+                            <img [src]=imagepath>
+                        </div>
+                        <!--img [src]=arrowPath-->
+    
                     </div>
-                    <div>
-                        <label class="motor-label-width">Gyro Speed: {{motorSpeed_gyro}}</label>
-                        <mat-slider min="0" max="100" step="1" (input)="onGyroChange($event)" value={{motorSpeed_gyro}}
-                            class="motor-slider-length">
-                        </mat-slider>
-                    </div>
-                </div>
+                
             </div>
             <div class="sensor">
                 <div>
                     <h2>General</h2>
-                    <!--div *ngFor="let item of bme | keyvalue">
-                        {{ item.key }} : {{ item.value }}
-                    </div-->
                     <div>
                         Humidity: {{ bme?.humidityrelative }}%
                     </div>
@@ -57,16 +49,35 @@
                     </div>
                 </div>
                 <div>
-                    <h2>Compass</h2>
-                    <h4 class="bearing">{{rotationAngle}}&deg;</h4>
-                    <div class="bearing" #imageContainer class="image-com">
-                        <img [src]=imagepath>
+                    
+                        <h2>Motor settings</h2>
+                        <div>
+                            <label class="motor-label-width">Motor 1 speed: {{motorSpeed_1}}</label>
+                            <mat-slider min="0" max="100" step="1" (input)="onMotor1Change($event)" value={{motorSpeed_1}}
+                                class="motor-slider-length">
+                            </mat-slider>
+                        </div>
+                        <div>
+                            <label class="motor-label-width">Motor 2 speed: {{motorSpeed_2}}</label>
+                            <mat-slider min="0" max="100" step="1" (input)="onMotor2Change($event)" value={{motorSpeed_2}}
+                                class="motor-slider-length">
+                            </mat-slider>
+                        </div>
+                        <div>
+                            <label class="motor-label-width">Motor 3 speed: {{motorSpeed_3}}</label>
+                            <mat-slider min="0" max="100" step="1" (input)="onMotor3Change($event)" value={{motorSpeed_3}}
+                                class="motor-slider-length">
+                            </mat-slider>
+                        </div>
+                        <div>
+                            <label class="motor-label-width">Motor 4 speed: {{motorSpeed_4}}</label>
+                            <mat-slider min="0" max="100" step="1" (input)="onMotor4Change($event)" value={{motorSpeed_4}}
+                                class="motor-slider-length">
+                            </mat-slider>
+                        </div>
                     </div>
-                    <!--img [src]=arrowPath-->
-
-                </div>
             </div>
         </div>
     </mat-card-content>
 </mat-card>
-<button mat-raised-button color="warn" (click)="rotateCompass()">ExecuteTest</button>
+<!-- <button mat-raised-button color="warn" (click)="rotateCompass()">ExecuteTest</button> -->

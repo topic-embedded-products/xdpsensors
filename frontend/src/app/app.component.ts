@@ -40,8 +40,12 @@ export class AppComponent implements OnInit {
   bmi088_accel_subscription: Subscription;
   bmi088_gyro_subscription: Subscription;
   subInterval = 1000; //ms
-  motorSpeed_accel = 50;
-  motorSpeed_gyro = 50;
+
+  motorSpeed_1 = 50;
+  motorSpeed_2 = 50;  
+  motorSpeed_3 = 50;
+  motorSpeed_4 = 50;
+
   imagepath = "assets/img/com_ts.png"
   arrowPath = "assets/img/red_arrow.png"
   state: string = 'default';
@@ -211,7 +215,7 @@ export class AppComponent implements OnInit {
       .subscribe(
         data => {
           this.bme = data
-          //console.log(this.bme)
+          console.log(this.bme)
         }
       )
 
@@ -240,14 +244,24 @@ export class AppComponent implements OnInit {
       )
   }
 
-  onGyroChange(event: MatSliderChange) {
-    this.motorSpeed_gyro = event.value;
-    this.backend.sendMotorSpeed("motorspeed", "motorspeed_1", this.motorSpeed_gyro).subscribe()
+  onMotor1Change(event: MatSliderChange) {
+    this.motorSpeed_1 = event.value;
+    this.backend.sendMotorSpeed("motorspeed", "motorSpeed_1", this.motorSpeed_1).subscribe()
   }
 
-  onAccelChange(event: MatSliderChange) {
-    this.motorSpeed_accel = event.value;
-    this.backend.sendMotorSpeed("motorspeed", "motorspeed_1", this.motorSpeed_accel).subscribe()
+  onMotor2Change(event: MatSliderChange) {
+    this.motorSpeed_2 = event.value;
+    this.backend.sendMotorSpeed("motorspeed", "motorSpeed_2", this.motorSpeed_2).subscribe()
+  }
+
+  onMotor3Change(event: MatSliderChange) {
+    this.motorSpeed_3 = event.value;
+    this.backend.sendMotorSpeed("motorspeed", "motorSpeed_3", this.motorSpeed_3).subscribe()
+  }
+
+  onMotor4Change(event: MatSliderChange) {
+    this.motorSpeed_4 = event.value;
+    this.backend.sendMotorSpeed("motorspeed", "motorSpeed_4", this.motorSpeed_4).subscribe()
   }
 
   rotateCompass() {

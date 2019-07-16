@@ -11,6 +11,8 @@ import json
 
 motorSpeed_1 = 0
 motorSpeed_2 = 0
+motorSpeed_3 = 0
+motorSpeed_4 = 0
 
 class Bme680Resource(Resource):
     isLeaf = True
@@ -65,29 +67,32 @@ class MotorSpeedResource(Resource):
         count = 0
         exists = False
         for item in request.args:
-            if item == "motorspeed_1":
-                exists = True
+            if item == "motorSpeed_1":
+                speedArray = request.args.values()
+                motorSpeed_1 = speedArray[count][0]
+                print ("Motor 1 speed set: "+str(motorSpeed_1))
+                return "{0}".format(motorSpeed_1)
+                break;
+            elif item == "motorSpeed_2":
+                speedArray = request.args.values()
+                motorSpeed_2 = speedArray[count][0]
+                print ("Motor 2 speed set: "+str(motorSpeed_2))
+                return "{0}".format(motorSpeed_2)
+                break;
+            elif item == "motorSpeed_3":
+                speedArray = request.args.values()
+                motorSpeed_3 = speedArray[count][0]
+                print ("Motor 3 speed set: "+str(motorSpeed_3))
+                return "{0}".format(motorSpeed_3)
+                break;
+            elif item == "motorSpeed_4":
+                speedArray = request.args.values()
+                motorSpeed_4 = speedArray[count][0]
+                print ("Motor 4 speed set: "+str(motorSpeed_4))
+                return "{0}".format(motorSpeed_4)
                 break;
             else:
                 count += 1
-        if exists:
-            speedArray = request.args.values()
-            motorSpeed_1 = speedArray[count][0]
-            print motorSpeed_1
-            return "{0}".format(motorSpeed_1) #request.args.values() keys() , values()
-        count = 0
-        exists = False
-        for item in request.args:
-            if item == "motorspeed_2":
-                exists = True
-                break;
-            else:
-                count += 1
-        if exists:
-            speedArray = request.args.values()
-            motorSpeed_2 = speedArray[count][0]
-            print motorSpeed_2
-            return "{0}".format(motorSpeed_2) #request.args.values() keys() , values()
         return "-1"
         
 import cgi

@@ -20,7 +20,7 @@
 }
 
 .motor-label-width{
-  width: 110px;
+  width: 130px;
 }
 
 .motor-slider-length{
@@ -52,7 +52,11 @@
 .image-com{
   width: 280px;
   height: 280px;
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 15px;
 }
 
-.bearing{text-align: center;
+.bearing{
+  text-align: center;
 }
