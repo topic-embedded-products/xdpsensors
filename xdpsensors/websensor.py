@@ -9,29 +9,8 @@ import json
 
 motorSpeed_1 = 0
 motorSpeed_2 = 0
-
-# class DynamicResource(resource.Resource):
-#     #isLeaf = True
-#     def __init__(self, uri = None):
-#         resource.Resource.__init__(self)
-#         self.iio_ctx = iio.Context(uri) # must be kept alive
-#         self.xdp_sensors = iiosensors.create_sensor_channel_list(self.iio_ctx, lambda c: c.id.startswith('volt'))
-#     def getChild(self, name, request):
-#         if name == '':
-#             return self
-#         return resource.Resource.getChild(self, name, request)
-#     def render_GET(self, request):
-#         request.setHeader("refresh", "1");
-#         request.write('''<html><head><link rel="stylesheet" type="text/css" href="style.css"></head>\n<body><table>''')
-#         for s in self.xdp_sensors:
-#             request.write("<tr><th>%s</th><td></td><td></td></tr>\n" % s.name.encode('utf-8'))
-#             for c in s.channels:
-#                 try:
-#                     v = c.get()
-#                 except OSError as e:
-#                     v = e.strerror
-#                 request.write("<td></td><td>%s</td><td>%s</td></tr>\n" % (c.name.encode('utf-8'), v))
-#         return "</table></body></html>\n"
+motorSpeed_3 = 0
+motorSpeed_4 = 0
 
 class DynamicResource(resource.Resource):
     #isLeaf = True
@@ -116,7 +95,7 @@ class Bmi088GyroResource(DynamicResource):
         app_json = json.dumps(self.sensorDict)
         return bytes(app_json)
 
-class MotorSpeedResource(DynamicResource):    
+class MotorSpeedResource(DynamicResource):     
     isLeaf = True 
     def render_GET(self, request):
         #print ("TEST 2")
@@ -124,29 +103,32 @@ class MotorSpeedResource(DynamicResource):
         count = 0
         exists = False
         for item in request.args:
-            if item == "motorspeed_1":
-                exists = True
+            if item == "motorSpeed_1":
+                speedArray = request.args.values()
+                motorSpeed_1 = speedArray[count][0]
+                print ("Motor 1 speed set: "+str(motorSpeed_1))
+                return "{0}".format(motorSpeed_1)
+                break;
+            elif item == "motorSpeed_2":
+                speedArray = request.args.values()
+                motorSpeed_2 = speedArray[count][0]
+                print ("Motor 2 speed set: "+str(motorSpeed_2))
+                return "{0}".format(motorSpeed_2)
+                break;
+            elif item == "motorSpeed_3":
+                speedArray = request.args.values()
+                motorSpeed_3 = speedArray[count][0]
+                print ("Motor 3 speed set: "+str(motorSpeed_3))
+                return "{0}".format(motorSpeed_3)
+                break;
+            elif item == "motorSpeed_4":
+                speedArray = request.args.values()
+                motorSpeed_4 = speedArray[count][0]
+                print ("Motor 4 speed set: "+str(motorSpeed_4))
+                return "{0}".format(motorSpeed_4)
                 break;
             else:
                 count += 1
-        if exists:
-            speedArray = request.args.values()
-            motorSpeed_1 = speedArray[count][0]
-            print motorSpeed_1
-            return "{0}".format(motorSpeed_1) #request.args.values() keys() , values()
-        count = 0
-        exists = False
-        for item in request.args:
-            if item == "motorspeed_2":
-                exists = True
-                break;
-            else:
-                count += 1
-        if exists:
-            speedArray = request.args.values()
-            motorSpeed_2 = speedArray[count][0]
-            print motorSpeed_2
-            return "{0}".format(motorSpeed_2) #request.args.values() keys() , values()
         return "-1"
 		
 class AmsResource(DynamicResource):

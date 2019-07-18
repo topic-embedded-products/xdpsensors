@@ -7,7 +7,7 @@ import { switchMap } from 'rxjs/operators';
 import { MatSliderChange } from '@angular/material'
 import { Chart } from 'chart.js';
 import { trigger, state, style, animate, transition } from '@angular/animations';
-import {AnimationBuilder} from '@angular/animations';
+import { AnimationBuilder } from '@angular/animations';
 
 @Component({
   selector: 'app-root',
@@ -16,11 +16,8 @@ import {AnimationBuilder} from '@angular/animations';
   animations: [
     // Each unique animation requires its own trigger. The first argument of the trigger function is the name
     trigger('rotatedState', [
-      //state('*', style({ transform: "rotate({{ percentage }})"}), { params: { percentage: 0 } }),
-      //state('default', style({ transform: 'rotate(0)' })),
       state('*', style({ transform: 'rotate({{ degparam }}deg)' }), { params: { degparam: 180 } }),
       transition('* => *', animate('250ms ease-in')),
-      //transition('default => rotated', animate('200ms ease-in'))
     ])
   ]
 })
@@ -30,7 +27,7 @@ export class AppComponent implements OnInit {
 
   title = 'drone-frontend';
   private sensorData: Observable<any>
-  private bme: BME680;
+  bme: BME680;
   private ams: AMS[];
   private bmi088_accel: BMI088_ACCEL;
   private bmi088_gyro: BMI088_GYRO;
@@ -42,14 +39,14 @@ export class AppComponent implements OnInit {
   subInterval = 1000; //ms
 
   motorSpeed_1 = 50;
-  motorSpeed_2 = 50;  
+  motorSpeed_2 = 50;
   motorSpeed_3 = 50;
   motorSpeed_4 = 50;
 
   imagepath = "assets/img/com_ts.png"
   arrowPath = "assets/img/red_arrow.png"
   state: string = 'default';
-  
+
   @ViewChild("accelChart", { static: false })
   public refAccelChart: ElementRef;
   public accelChartData: any = {};
@@ -61,7 +58,7 @@ export class AppComponent implements OnInit {
   private gyroChart: Chart;
 
   @ViewChild("imageContainer", { static: false }) imageContainerElement: ElementRef;
-  rotationAngle:number;    
+  rotationAngle: number;
 
   constructor(private backend: BackendService, private animationBuilder: AnimationBuilder) {
     this.accelChartData = {};
@@ -181,8 +178,8 @@ export class AppComponent implements OnInit {
         scales: {
           yAxes: [{
             ticks: {
-              suggestedMin: -360,
-              suggestedMax: 360
+              suggestedMin: -1,
+              suggestedMax: 1
             }
           }]
         },
@@ -215,7 +212,7 @@ export class AppComponent implements OnInit {
       .subscribe(
         data => {
           this.bme = data
-          console.log(this.bme)
+          //console.log(this.bme)
         }
       )
 
@@ -265,13 +262,13 @@ export class AppComponent implements OnInit {
   }
 
   rotateCompass() {
-    //this.state = (this.state === 'default' ? 'rotated' : 'default');
-    //this.rotationAngle = (this.rotationAngle+10) % 360;
-    let animationFactory = this.animationBuilder.build([
-      style('*'),
-      animate('500ms', style({transform: 'rotate(-' + this.rotationAngle + 'deg)'}))
-    ]);
-    animationFactory.create(this.imageContainerElement.nativeElement).play();
+    if (!Number.isNaN(this.rotationAngle)) {
+      let animationFactory = this.animationBuilder.build([
+        style('*'),
+        animate('500ms', style({ transform: 'rotate(-' + this.rotationAngle + 'deg)' }))
+      ]);
+      animationFactory.create(this.imageContainerElement.nativeElement).play();
+    }
   }
 
 

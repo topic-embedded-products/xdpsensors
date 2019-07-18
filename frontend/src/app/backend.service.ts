@@ -11,9 +11,8 @@ import { RequestOptions, Request, Headers } from '@angular/http';
 })
 export class BackendService {
 
-  localServer = "http://localhost:9990/"
-  //localServer = "http://192.168.80.68/"
-  //private controller = "bme680"
+  //localServer = "http://localhost:9990/"
+  localServer = "http://topic-miamimp-xilinx-xdp-xczu7ev.local:9990/"
 
   constructor(private http: HttpClient) { }
   /**
@@ -40,7 +39,9 @@ export class BackendService {
   }
 
   getSensorData<T>(api: string): Observable<T> {
-    return this.http.get<T>(this.localServer + api)
+    let requestAddr = this.localServer + api;
+    //console.log(requestAddr)
+    return this.http.get<T>(requestAddr)
       .pipe(
         //tap(_ => console.log('fetched data'))
         //  map(this.extractData)

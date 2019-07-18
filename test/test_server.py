@@ -119,6 +119,7 @@ root.putChild("bme680", Bme680Resource())
 root.putChild("bmi088_gyro", Bmi088GyroResource())
 root.putChild("ams", AmsResource())
 root.putChild("video", File('vid_test.mp4'))
+root.putChild("test_index", File('drone-frontend/index.html'))
 root.putChild("motorspeed", MotorSpeedResource())
 root.putChild("test", FormPage())
 
