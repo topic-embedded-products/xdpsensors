@@ -7,7 +7,7 @@ port = os.environ.get('XDP_PORT')
 if port:
     port = int(port)
 else:
-    port = 80
+    port = 9990
 root = os.environ.get('XDP_ROOT') or '/var/www'
 
 application = service.Application("XDP Webserver")
