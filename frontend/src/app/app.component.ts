@@ -63,6 +63,27 @@ export class AppComponent implements OnInit {
   constructor(private backend: BackendService, private animationBuilder: AnimationBuilder) {
     this.accelChartData = {};
     this.gyroChartData = {};
+
+    this.bme = {
+      humidityrelative: 0,
+      pressure: 0,
+      resistance: 0,
+      temp: 0
+    };
+
+    this.bmi088_accel = {
+      accel_x: 0,
+      accel_y: 0,
+      accel_z: 0,
+      temp: 0
+    };
+
+    this.bmi088_gyro = {
+      anglvel_x: 0,
+      anglvel_y: 0,
+      anglvel_z: 0,
+      temp: 0
+    };
   }
 
   ngOnInit(): void {
@@ -72,7 +93,12 @@ export class AppComponent implements OnInit {
         switchMap(() => this.backend.getSensorData<BME680>("bme680")))
       .subscribe(result => {
         this.bme = result;
-        this.rotationAngle = this.bme.resistance;
+        if (typeof this.bme.resistance === "string") {
+          this.rotationAngle = 0;
+        }
+        else {
+          this.rotationAngle = this.bme.resistance;
+        }
         this.rotateCompass();
       });
 
@@ -143,12 +169,6 @@ export class AppComponent implements OnInit {
   }
 
   public ngAfterViewInit() {
-
-    // this.bme.humidityrelative = 0;
-    // this.bme.pressure = 0;
-    // this.bme.resistance = 0;
-    // this.bme.temp = 0;
-
     let chart = this.refAccelChart.nativeElement;
     let ctx = chart.getContext("2d");
     this.accelChart = new Chart(chart, {
@@ -212,7 +232,6 @@ export class AppComponent implements OnInit {
       .subscribe(
         data => {
           this.bme = data
-          //console.log(this.bme)
         }
       )
 
@@ -220,7 +239,6 @@ export class AppComponent implements OnInit {
       .subscribe(
         (data: AMS[]) => {
           this.ams = data
-          //console.log(JSON.stringify(this.ams))
         }
       )
 
@@ -228,7 +246,6 @@ export class AppComponent implements OnInit {
       .subscribe(
         data => {
           this.bmi088_accel = data
-          //console.log(this.bmi_accel)
         }
       )
 
@@ -236,7 +253,6 @@ export class AppComponent implements OnInit {
       .subscribe(
         data => {
           this.bmi088_gyro = data
-          //console.log(this.bmi088_gyro)
         }
       )
   }
