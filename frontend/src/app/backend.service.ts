@@ -11,9 +11,6 @@ import { RequestOptions, Request, Headers } from '@angular/http';
 })
 export class BackendService {
 
-  //localServer = "http://localhost:9990/"
-  localServer = "http://topic-miamimp-xilinx-xdp-xczu7ev.local:9990/"
-
   constructor(private http: HttpClient) { }
   /**
   * Function to extract the data when the server return some
@@ -39,7 +36,7 @@ export class BackendService {
   }
 
   getSensorData<T>(api: string): Observable<T> {
-    let requestAddr = this.localServer + api;
+    let requestAddr = api;
     //console.log(requestAddr)
     return this.http.get<T>(requestAddr)
       .pipe(
@@ -51,7 +48,7 @@ export class BackendService {
   /** POST: send motor speed in % */
   sendMotorSpeed(api: string, motorType: string, speed: number): Observable<number> {
 
-    return this.http.get<number>(this.localServer + api + "?" + motorType + "=" + speed)
+    return this.http.get<number>(api + "?" + motorType + "=" + speed)
       .pipe(
         catchError(this.handleError('sendMotorSpeed', speed))
       );

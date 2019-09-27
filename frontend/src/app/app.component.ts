@@ -25,6 +25,8 @@ import { AnimationBuilder } from '@angular/animations';
 
 export class AppComponent implements OnInit {
 
+  private data_url: string = "http://" + window.location.hostname + ":9990/";
+  public video_loc: string = this.data_url + "video"; 
   title = 'drone-frontend';
   private sensorData: Observable<any>
   bme: BME680;
@@ -90,7 +92,7 @@ export class AppComponent implements OnInit {
     this.rotationAngle = 0;
     this.bme680_subscription = timer(0, this.subInterval)
       .pipe(
-        switchMap(() => this.backend.getSensorData<BME680>("bme680")))
+        switchMap(() => this.backend.getSensorData<BME680>(this.data_url+"bme680")))
       .subscribe(result => {
         this.bme = result;
         if (typeof this.bme.resistance === "string") {
@@ -103,12 +105,12 @@ export class AppComponent implements OnInit {
       });
 
     this.ams_subscription = timer(0, this.subInterval).pipe(
-      switchMap(() => this.backend.getSensorData<AMS[]>("ams"))
+      switchMap(() => this.backend.getSensorData<AMS[]>(this.data_url+"ams"))
     ).subscribe(result => this.ams = result);
 
     this.bmi088_accel_subscription = timer(0, this.subInterval)
       .pipe(
-        switchMap(() => this.backend.getSensorData<BMI088_ACCEL>("bmi088_accel")))
+        switchMap(() => this.backend.getSensorData<BMI088_ACCEL>(this.data_url+"bmi088_accel")))
       .subscribe(result => {
         this.bmi088_accel = result;
         this.chartAccelUpdate();
@@ -116,7 +118,7 @@ export class AppComponent implements OnInit {
 
     this.bmi088_gyro_subscription = timer(0, this.subInterval)
       .pipe(
-        switchMap(() => this.backend.getSensorData<BMI088_GYRO>("bmi088_gyro")))
+        switchMap(() => this.backend.getSensorData<BMI088_GYRO>(this.data_url+"bmi088_gyro")))
       .subscribe(result => {
         this.bmi088_gyro = result;
         this.chartGyroUpdate();
@@ -228,28 +230,28 @@ export class AppComponent implements OnInit {
     return JSON.stringify(obj);
   }
   getSensorData() {
-    this.backend.getSensorData<BME680>("bme680")
+    this.backend.getSensorData<BME680>(this.data_url+"bme680")
       .subscribe(
         data => {
           this.bme = data
         }
       )
 
-    this.backend.getSensorData<any>("ams")
+    this.backend.getSensorData<any>(this.data_url+"ams")
       .subscribe(
         (data: AMS[]) => {
           this.ams = data
         }
       )
 
-    this.backend.getSensorData<BMI088_ACCEL>("bmi088_accel")
+    this.backend.getSensorData<BMI088_ACCEL>(this.data_url+"bmi088_accel")
       .subscribe(
         data => {
           this.bmi088_accel = data
         }
       )
 
-    this.backend.getSensorData<BMI088_GYRO>("bmi088_gyro")
+    this.backend.getSensorData<BMI088_GYRO>(this.data_url+"bmi088_gyro")
       .subscribe(
         data => {
           this.bmi088_gyro = data
@@ -259,22 +261,22 @@ export class AppComponent implements OnInit {
 
   onMotor1Change(event: MatSliderChange) {
     this.motorSpeed_1 = event.value;
-    this.backend.sendMotorSpeed("motorspeed", "motorSpeed_1", this.motorSpeed_1).subscribe()
+    this.backend.sendMotorSpeed(this.data_url+"motorspeed", "motorSpeed_1", this.motorSpeed_1).subscribe()
   }
 
   onMotor2Change(event: MatSliderChange) {
     this.motorSpeed_2 = event.value;
-    this.backend.sendMotorSpeed("motorspeed", "motorSpeed_2", this.motorSpeed_2).subscribe()
+    this.backend.sendMotorSpeed(this.data_url+"motorspeed", "motorSpeed_2", this.motorSpeed_2).subscribe()
   }
 
   onMotor3Change(event: MatSliderChange) {
     this.motorSpeed_3 = event.value;
-    this.backend.sendMotorSpeed("motorspeed", "motorSpeed_3", this.motorSpeed_3).subscribe()
+    this.backend.sendMotorSpeed(this.data_url+"motorspeed", "motorSpeed_3", this.motorSpeed_3).subscribe()
   }
 
   onMotor4Change(event: MatSliderChange) {
     this.motorSpeed_4 = event.value;
-    this.backend.sendMotorSpeed("motorspeed", "motorSpeed_4", this.motorSpeed_4).subscribe()
+    this.backend.sendMotorSpeed(this.data_url+"motorspeed", "motorSpeed_4", this.motorSpeed_4).subscribe()
   }
 
   rotateCompass() {
