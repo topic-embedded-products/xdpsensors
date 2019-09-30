@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
-import { BackendService, BME680, AMS, BMI088_ACCEL, BMI088_GYRO } from './backend.service';
+import { BackendService, BME680, AMS, BMI088_ACCEL, BMI088_GYRO, BMM150_MAGN } from './backend.service';
 import 'rxjs/add/operator/map'
 import { Subscription, timer, pipe, from } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -33,18 +33,19 @@ export class AppComponent implements OnInit {
   private ams: AMS[];
   private bmi088_accel: BMI088_ACCEL;
   private bmi088_gyro: BMI088_GYRO;
+  bmm150_magn: BMM150_MAGN;
 
   bme680_subscription: Subscription;
   ams_subscription: Subscription;
   bmi088_accel_subscription: Subscription;
   bmi088_gyro_subscription: Subscription;
+  bmm150_magn_subscription: Subscription;
   subInterval = 1000; //ms
 
   motorSpeed_1 = 50;
   motorSpeed_2 = 50;
   motorSpeed_3 = 50;
   motorSpeed_4 = 50;
-
   imagepath = "assets/img/com_ts.png"
   arrowPath = "assets/img/red_arrow.png"
   state: string = 'default';
@@ -86,22 +87,40 @@ export class AppComponent implements OnInit {
       anglvel_z: 0,
       temp: 0
     };
+
+    this.bmm150_magn = {
+      magn_x: 0,
+      magn_y: 0,
+      magn_z: 0
+    };
   }
 
   ngOnInit(): void {
     this.rotationAngle = 0;
+    this.bmm150_magn_subscription = timer(0, this.subInterval)
+      .pipe(
+        switchMap(() => this.backend.getSensorData<BMM150_MAGN>(this.data_url+"bmm150_magn")))
+      .subscribe(result => {
+        this.bmm150_magn = result;
+        // if (typeof this.bmm150_magn.resistance === "string") {
+        let heading = Math.atan2(this.bmm150_magn.magn_y, this.bmm150_magn.magn_x);
+        if(heading < 0)
+          heading += 2*Math.PI;
+        if(heading > 2*Math.PI)
+          heading -= 2*Math.PI;
+        this.rotationAngle = Math.round(heading * 180/Math.PI);
+        // }
+        // else {
+        //   this.rotationAngle = this.bme.resistance;
+        // }
+        this.rotateCompass();
+      });
+
     this.bme680_subscription = timer(0, this.subInterval)
       .pipe(
         switchMap(() => this.backend.getSensorData<BME680>(this.data_url+"bme680")))
       .subscribe(result => {
         this.bme = result;
-        if (typeof this.bme.resistance === "string") {
-          this.rotationAngle = 0;
-        }
-        else {
-          this.rotationAngle = this.bme.resistance;
-        }
-        this.rotateCompass();
       });
 
     this.ams_subscription = timer(0, this.subInterval).pipe(
@@ -255,6 +274,12 @@ export class AppComponent implements OnInit {
       .subscribe(
         data => {
           this.bmi088_gyro = data
+        }
+      )
+    this.backend.getSensorData<BMM150_MAGN>(this.data_url+"bmm150_magn")
+      .subscribe(
+        data => {
+          this.bmm150_magn = data
         }
       )
   }

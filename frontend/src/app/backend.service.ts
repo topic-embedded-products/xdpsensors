@@ -81,3 +81,8 @@ export interface BMI088_ACCEL {
   accel_y: number;
   temp: number;
 }
+export interface BMM150_MAGN {
+  magn_z: number;
+  magn_x: number;
+  magn_y: number;
+}
