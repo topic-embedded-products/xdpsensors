@@ -11,7 +11,7 @@ motorSpeed_1 = 0
 motorSpeed_2 = 0
 motorSpeed_3 = 0
 motorSpeed_4 = 0
-
+    
 class DynamicResource(resource.Resource):
     #isLeaf = True
     def __init__(self, uri = None):
@@ -72,7 +72,27 @@ class Bme680Resource(DynamicResource):
                     #self.sensorDict[bme680_name][channel_name] = channel_value
         app_json = json.dumps(self.sensorDict)
         return bytes(app_json)
-
+        
+class Bmm150Resource(DynamicResource):
+    def render_GET(self, request):
+        request.setHeader("refresh", "1");
+        request.responseHeaders.addRawHeader(b"content-type", b"application/json")
+        request.setHeader('Access-Control-Allow-Origin', '*')
+        for bmm150 in self.xdp_sensors:
+            bmm150_name = bmm150.name.encode('utf-8')
+            if bmm150_name == 'bmm150_magn':
+                self.sensorDict = {}
+                #self.sensorDict[bmm150_name] = {}
+                for channel in bmm150.channels:
+                    channel_name = channel.name.encode('utf-8')
+                    try:
+                        channel_value = channel.get()
+                    except OSError as e:
+                        channel_value = e.strerror
+                    self.sensorDict[channel_name] = channel_value
+                    #self.sensorDict[bmm150_name][channel_name] = channel_value
+        app_json = json.dumps(self.sensorDict)
+        return bytes(app_json)
 
 class Bmi088GyroResource(DynamicResource):
     def render_GET(self, request):
@@ -164,6 +184,7 @@ def getWebService(uri = None, port = 9990, root = '/var/www'):
     root.putChild("bmi088_accel", Bmi088AccelResource(uri))
     root.putChild("bme680", Bme680Resource(uri))
     root.putChild("bmi088_gyro", Bmi088GyroResource(uri))
+    root.putChild("bmm150_magn", Bmm150Resource(uri))
     root.putChild("ams", AmsResource(uri))
     root.putChild("motorspeed", MotorSpeedResource(uri))
     root.putChild("video", File('/media/mmcblk1p3/vid_test.mp4'))
