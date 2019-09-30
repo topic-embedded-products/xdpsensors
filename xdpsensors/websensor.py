@@ -6,12 +6,12 @@ from twisted.web.static import File
 import iio
 import iiosensors
 import json
-
+              
 motorSpeed_1 = 0
 motorSpeed_2 = 0
 motorSpeed_3 = 0
 motorSpeed_4 = 0
-    
+
 class DynamicResource(resource.Resource):
     #isLeaf = True
     def __init__(self, uri = None):
@@ -115,9 +115,13 @@ class Bmi088GyroResource(DynamicResource):
         app_json = json.dumps(self.sensorDict)
         return bytes(app_json)
 
-class MotorSpeedResource(DynamicResource):     
+class MotorSpeedResource(DynamicResource):   
     isLeaf = True 
-    def render_GET(self, request):
+    def render_GET(self, request):          
+        global motorSpeed_1
+        global motorSpeed_2
+        global motorSpeed_3
+        global motorSpeed_4
         #print ("TEST 2")
         request.setHeader('Access-Control-Allow-Origin', '*')
         count = 0
@@ -125,27 +129,43 @@ class MotorSpeedResource(DynamicResource):
         for item in request.args:
             if item == "motorSpeed_1":
                 speedArray = request.args.values()
-                motorSpeed_1 = speedArray[count][0]
-                print ("Motor 1 speed set: "+str(motorSpeed_1))
-                return "{0}".format(motorSpeed_1)
+                lv_speed = speedArray[count][0]
+                if  int(lv_speed) >= 0:
+                    motorSpeed_1 = lv_speed
+                    print ("Motor 1 speed set: "+str(motorSpeed_1))
+                    return "{0}".format(motorSpeed_1)
+                else:
+                    return "{0}".format(motorSpeed_1)
                 break;
             elif item == "motorSpeed_2":
                 speedArray = request.args.values()
-                motorSpeed_2 = speedArray[count][0]
-                print ("Motor 2 speed set: "+str(motorSpeed_2))
-                return "{0}".format(motorSpeed_2)
+                lv_speed = speedArray[count][0]
+                if  int(lv_speed) >= 0:
+                    motorSpeed_2 = lv_speed
+                    print ("Motor 2 speed set: "+str(motorSpeed_2))
+                    return "{0}".format(motorSpeed_2)
+                else:
+                    return "{0}".format(motorSpeed_2)
                 break;
             elif item == "motorSpeed_3":
                 speedArray = request.args.values()
-                motorSpeed_3 = speedArray[count][0]
-                print ("Motor 3 speed set: "+str(motorSpeed_3))
-                return "{0}".format(motorSpeed_3)
+                lv_speed = speedArray[count][0]
+                if  int(lv_speed) >= 0:
+                    motorSpeed_3 = lv_speed
+                    print ("Motor 3 speed set: "+str(motorSpeed_3))
+                    return "{0}".format(motorSpeed_3)
+                else:
+                    return "{0}".format(motorSpeed_3)
                 break;
             elif item == "motorSpeed_4":
                 speedArray = request.args.values()
-                motorSpeed_4 = speedArray[count][0]
-                print ("Motor 4 speed set: "+str(motorSpeed_4))
-                return "{0}".format(motorSpeed_4)
+                lv_speed = speedArray[count][0]
+                if  int(lv_speed) >= 0:
+                    motorSpeed_4 = lv_speed
+                    print ("Motor 4 speed set: "+str(motorSpeed_4))
+                    return "{0}".format(motorSpeed_4)
+                else:
+                    return "{0}".format(motorSpeed_4)
                 break;
             else:
                 count += 1
