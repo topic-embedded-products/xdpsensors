@@ -42,10 +42,10 @@ export class AppComponent implements OnInit {
   bmm150_magn_subscription: Subscription;
   subInterval = 1000; //ms
 
-  motorSpeed_1 = 50;
-  motorSpeed_2 = 50;
-  motorSpeed_3 = 50;
-  motorSpeed_4 = 50;
+  motorSpeed_1 = 0;
+  motorSpeed_2 = 0;
+  motorSpeed_3 = 0;
+  motorSpeed_4 = 0;
   imagepath = "assets/img/com_ts.png"
   arrowPath = "assets/img/red_arrow.png"
   state: string = 'default';
@@ -97,6 +97,12 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.rotationAngle = 0;
+    // initialize motor speed data (use negative number to get data)
+    this.backend.sendMotorSpeed(this.data_url+"motorspeed", "motorSpeed_1", -1).subscribe(data => {this.motorSpeed_1 = data})
+    this.backend.sendMotorSpeed(this.data_url+"motorspeed", "motorSpeed_2", -1).subscribe(data => {this.motorSpeed_2 = data})
+    this.backend.sendMotorSpeed(this.data_url+"motorspeed", "motorSpeed_3", -1).subscribe(data => {this.motorSpeed_3 = data})
+    this.backend.sendMotorSpeed(this.data_url+"motorspeed", "motorSpeed_4", -1).subscribe(data => {this.motorSpeed_4 = data})
+
     this.bmm150_magn_subscription = timer(0, this.subInterval)
       .pipe(
         switchMap(() => this.backend.getSensorData<BMM150_MAGN>(this.data_url+"bmm150_magn")))
@@ -286,22 +292,22 @@ export class AppComponent implements OnInit {
 
   onMotor1Change(event: MatSliderChange) {
     this.motorSpeed_1 = event.value;
-    this.backend.sendMotorSpeed(this.data_url+"motorspeed", "motorSpeed_1", this.motorSpeed_1).subscribe()
+    this.backend.sendMotorSpeed(this.data_url+"motorspeed", "motorSpeed_1", this.motorSpeed_1).subscribe(data => {this.motorSpeed_1 = data})
   }
 
   onMotor2Change(event: MatSliderChange) {
     this.motorSpeed_2 = event.value;
-    this.backend.sendMotorSpeed(this.data_url+"motorspeed", "motorSpeed_2", this.motorSpeed_2).subscribe()
+    this.backend.sendMotorSpeed(this.data_url+"motorspeed", "motorSpeed_2", this.motorSpeed_2).subscribe(data => {this.motorSpeed_2 = data})
   }
 
   onMotor3Change(event: MatSliderChange) {
     this.motorSpeed_3 = event.value;
-    this.backend.sendMotorSpeed(this.data_url+"motorspeed", "motorSpeed_3", this.motorSpeed_3).subscribe()
+    this.backend.sendMotorSpeed(this.data_url+"motorspeed", "motorSpeed_3", this.motorSpeed_3).subscribe(data => {this.motorSpeed_3 = data})
   }
 
   onMotor4Change(event: MatSliderChange) {
     this.motorSpeed_4 = event.value;
-    this.backend.sendMotorSpeed(this.data_url+"motorspeed", "motorSpeed_4", this.motorSpeed_4).subscribe()
+    this.backend.sendMotorSpeed(this.data_url+"motorspeed", "motorSpeed_4", this.motorSpeed_4).subscribe(data => {this.motorSpeed_4 = data})
   }
 
   rotateCompass() {
