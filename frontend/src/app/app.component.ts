@@ -40,6 +40,10 @@ export class AppComponent implements OnInit {
   bmi088_accel_subscription: Subscription;
   bmi088_gyro_subscription: Subscription;
   bmm150_magn_subscription: Subscription;
+  motorspeed1_subscription: Subscription;
+  motorspeed2_subscription: Subscription;
+  motorspeed3_subscription: Subscription;
+  motorspeed4_subscription: Subscription;
   subInterval = 1000; //ms
 
   motorSpeed_1 = 0;
@@ -97,12 +101,35 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.rotationAngle = 0;
-    // initialize motor speed data (use negative number to get data)
-    this.backend.sendMotorSpeed(this.data_url+"motorspeed", "motorSpeed_1", -1).subscribe(data => {this.motorSpeed_1 = data})
-    this.backend.sendMotorSpeed(this.data_url+"motorspeed", "motorSpeed_2", -1).subscribe(data => {this.motorSpeed_2 = data})
-    this.backend.sendMotorSpeed(this.data_url+"motorspeed", "motorSpeed_3", -1).subscribe(data => {this.motorSpeed_3 = data})
-    this.backend.sendMotorSpeed(this.data_url+"motorspeed", "motorSpeed_4", -1).subscribe(data => {this.motorSpeed_4 = data})
+    // get motor speed data (use negative number to get data)
+    this.motorspeed1_subscription = timer(0, this.subInterval)
+    .pipe(
+      switchMap(() => this.backend.sendMotorSpeed(this.data_url+"motorspeed", "motorSpeed_1", -1)))
+    .subscribe(result => {
+      this.motorSpeed_1 = result;
+    });
+    
+    this.motorspeed2_subscription = timer(0, this.subInterval)
+    .pipe(
+      switchMap(() => this.backend.sendMotorSpeed(this.data_url+"motorspeed", "motorSpeed_2", -1)))
+    .subscribe(result => {
+      this.motorSpeed_2 = result;
+    });
 
+    this.motorspeed3_subscription = timer(0, this.subInterval)
+    .pipe(
+      switchMap(() => this.backend.sendMotorSpeed(this.data_url+"motorspeed", "motorSpeed_3", -1)))
+    .subscribe(result => {
+      this.motorSpeed_3 = result;
+    });
+
+    this.motorspeed4_subscription = timer(0, this.subInterval)
+    .pipe(
+      switchMap(() => this.backend.sendMotorSpeed(this.data_url+"motorspeed", "motorSpeed_4", -1)))
+    .subscribe(result => {
+      this.motorSpeed_4 = result;
+    });
+    
     this.bmm150_magn_subscription = timer(0, this.subInterval)
       .pipe(
         switchMap(() => this.backend.getSensorData<BMM150_MAGN>(this.data_url+"bmm150_magn")))
@@ -193,6 +220,10 @@ export class AppComponent implements OnInit {
     this.ams_subscription.unsubscribe();
     this.bmi088_accel_subscription.unsubscribe();
     this.bmi088_gyro_subscription.unsubscribe();
+    this.motorspeed1_subscription.unsubscribe();
+    this.motorspeed2_subscription.unsubscribe();
+    this.motorspeed3_subscription.unsubscribe();
+    this.motorspeed4_subscription.unsubscribe();
   }
 
   public ngAfterViewInit() {
