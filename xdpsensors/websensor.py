@@ -122,7 +122,6 @@ class MotorSpeedResource(DynamicResource):
         global motorSpeed_2
         global motorSpeed_3
         global motorSpeed_4
-        #print ("TEST 2")
         request.setHeader('Access-Control-Allow-Origin', '*')
         count = 0
         exists = False
@@ -207,7 +206,7 @@ def getWebService(uri = None, port = 9990, root = '/var/www'):
     root.putChild("bmm150_magn", Bmm150Resource(uri))
     root.putChild("ams", AmsResource(uri))
     root.putChild("motorspeed", MotorSpeedResource(uri))
-    root.putChild("video", File('/var/www/localhost/html/vid_test.mp4'))
+    #root.putChild("video", File('/var/www/localhost/html/vid_test.mp4'))
     site = server.Site(root)
     return internet.TCPServer(port, site)
 

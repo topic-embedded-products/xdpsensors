@@ -26,7 +26,7 @@ import { AnimationBuilder } from '@angular/animations';
 export class AppComponent implements OnInit {
 
   private data_url: string = "http://" + window.location.hostname + ":9990/";
-  public video_loc: string = this.data_url + "video"; 
+  public video_loc: string = "http://" + window.location.hostname + ":9991/"; 
   title = 'drone-frontend';
   private sensorData: Observable<any>
   bme: BME680;
