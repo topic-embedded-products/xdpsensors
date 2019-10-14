@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
-import { BackendService, BME680, AMS, BMI088_ACCEL, BMI088_GYRO, BMM150_MAGN } from './backend.service';
+import { BackendService, BME680, AMS, BMI088_ACCEL, BMI088_GYRO, BMM150_MAGN, Data_Througput } from './backend.service';
 import 'rxjs/add/operator/map'
 import { Subscription, timer, pipe, from } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { MatSliderChange } from '@angular/material'
+import { MatSliderChange, MatRadioButton } from '@angular/material'
 import { Chart } from 'chart.js';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { AnimationBuilder } from '@angular/animations';
@@ -25,7 +25,7 @@ import { AnimationBuilder } from '@angular/animations';
 
 export class AppComponent implements OnInit {
 
-  private data_url: string = "http://" + window.location.hostname + ":9990/";
+  private data_url: string = "http://" + window.location.hostname + ":9990/"
   public video_loc: string = "http://" + window.location.hostname + ":9991/"; 
   title = 'drone-frontend';
   private sensorData: Observable<any>
@@ -34,6 +34,7 @@ export class AppComponent implements OnInit {
   private bmi088_accel: BMI088_ACCEL;
   private bmi088_gyro: BMI088_GYRO;
   bmm150_magn: BMM150_MAGN;
+  data_thr: Data_Througput;
 
   bme680_subscription: Subscription;
   ams_subscription: Subscription;
@@ -44,14 +45,18 @@ export class AppComponent implements OnInit {
   motorspeed2_subscription: Subscription;
   motorspeed3_subscription: Subscription;
   motorspeed4_subscription: Subscription;
+  data_thr_subscription: Subscription;
   subInterval = 1000; //ms
 
   motorSpeed_1 = 0;
   motorSpeed_2 = 0;
   motorSpeed_3 = 0;
   motorSpeed_4 = 0;
+  data_throughput = 0;
   imagepath = "assets/img/com_ts.png"
-  arrowPath = "assets/img/red_arrow.png"
+  dyplo_img_path = "assets/img/Dyplo-logo.png"
+  arrow_right_img_path = "assets/img/arrow_right_sc.png"
+  arrow_up_img_path = "assets/img/arrow_up.png"
   state: string = 'default';
 
   @ViewChild("accelChart", { static: false })
@@ -148,7 +153,7 @@ export class AppComponent implements OnInit {
         // }
         this.rotateCompass();
       });
-
+      
     this.bme680_subscription = timer(0, this.subInterval)
       .pipe(
         switchMap(() => this.backend.getSensorData<BME680>(this.data_url+"bme680")))
@@ -174,6 +179,13 @@ export class AppComponent implements OnInit {
       .subscribe(result => {
         this.bmi088_gyro = result;
         this.chartGyroUpdate();
+      });
+
+    this.data_thr_subscription = timer(0, this.subInterval)
+        .pipe(
+          switchMap(() => this.backend.getSensorData<Data_Througput>(this.data_url+"throughput")))
+        .subscribe(result => {
+          this.data_thr = result;
       });
 
     this.accelChartData = {
@@ -224,6 +236,7 @@ export class AppComponent implements OnInit {
     this.motorspeed2_subscription.unsubscribe();
     this.motorspeed3_subscription.unsubscribe();
     this.motorspeed4_subscription.unsubscribe();
+    this.data_thr_subscription.unsubscribe();
   }
 
   public ngAfterViewInit() {
@@ -317,6 +330,12 @@ export class AppComponent implements OnInit {
       .subscribe(
         data => {
           this.bmm150_magn = data
+        }
+      )
+    this.backend.getSensorData<Data_Througput>(this.data_url+"throughput")
+      .subscribe(
+        data => {
+          this.data_thr = data
         }
       )
   }

@@ -86,3 +86,8 @@ export interface BMM150_MAGN {
   magn_x: number;
   magn_y: number;
 }
+
+export interface Data_Througput {
+  Raptor: number;
+  XDP   : number
+}

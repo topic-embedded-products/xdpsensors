@@ -6,15 +6,63 @@
         <div class="wrapper">
             <div class="video-card">
                 <h2>Video live</h2>
-                <video width="720" autoplay controls>
-                    <source src="{{video_loc}}" >
-                </video>
 
-                <div>
-                    <h2>Compass</h2>
-                    <h4 class="bearing">{{rotationAngle}}&deg;</h4>
-                    <div #imageContainer class="image-com">
-                        <img [src]=imagepath>
+                <video width="720" autoplay controls>
+                    <source src="{{video_loc}}">
+                </video>
+                <div class="cam-ctrl">
+                    <h2> Camera control</h2>
+                    <div class="cam-select">
+                        <mat-radio-group aria-label="Select a camera">
+                            <mat-radio-button value="1" checked>Cam 1</mat-radio-button>
+                            <mat-radio-button value="2">Cam 2</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                    <div class="arrow-cam-select">
+                        <img [src]=arrow_right_img_path>
+                    </div>
+                    <div class="mode1-select">
+                        <mat-form-field>
+                            <mat-label>Select an option</mat-label>
+                            <mat-select [(value)]="mode1-selected">
+                                <mat-option>None</mat-option>
+                                <mat-option value="option1">Option 1</mat-option>
+                                <mat-option value="option2">Option 2</mat-option>
+                                <mat-option value="option3">Option 3</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="arrow-mode1-select">
+                        <img [src]=arrow_right_img_path>
+                    </div>
+                    <div class="mode2-select">
+                        <mat-form-field>
+                            <mat-label>Select an option</mat-label>
+                            <mat-select [(value)]="mode2-selected">
+                                <mat-option>None</mat-option>
+                                <mat-option value="option1">Option 1</mat-option>
+                                <mat-option value="option2">Option 2</mat-option>
+                                <mat-option value="option3">Option 3</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="arrow-mode2-select">
+                        <img [src]=arrow_right_img_path>
+                    </div>
+                    <div class="cam-btn-apply">
+                        <button class="bnt-cam" mat-raised-button>Apply</button>
+                    </div>
+                    <div class="arrow-apply">
+                        <img [src]=arrow_up_img_path>
+                    </div>
+                    <div class="compass-dyplo-logo">
+                        <div class="dyplo-logo">
+                            <img class="dyplo" [src]=dyplo_img_path width="100%" height="100%">
+                        </div>
+                        <h4 class="bearing">{{rotationAngle}}&deg;</h4>
+                        <div #imageContainer class="compass-img">
+                            <img [src]=imagepath>
+                        </div>
                     </div>
                 </div>
 
@@ -30,6 +78,12 @@
                     </div>
                     <div>
                         Temperature: {{ bme?.temp / 1000 }} &#8451;
+                    </div>
+                    <div>
+                        XDP throughput: {{ data_thr?.XDP / 1000 }} GB/s
+                    </div>
+                    <div>
+                        Raptor throughput: {{ data_thr?.Raptor / 1000 }} GB/s
                     </div>
                 </div>
                 <div>
@@ -76,4 +130,3 @@
         </div>
     </mat-card-content>
 </mat-card>
-<!-- <button mat-raised-button color="warn" (click)="rotateCompass()">ExecuteTest</button> -->
