@@ -25,7 +25,7 @@ import { AnimationBuilder } from '@angular/animations';
 
 export class AppComponent implements OnInit {
 
-  private data_url: string = "http://" + window.location.hostname + ":9990/"
+  private data_url: string = "http://" + window.location.hostname + ":9990/";
   public video_loc: string = "http://" + window.location.hostname + ":9991/"; 
   title = 'drone-frontend';
   private sensorData: Observable<any>
@@ -59,8 +59,9 @@ export class AppComponent implements OnInit {
   arrow_up_img_path = "assets/img/arrow_up.png"
   state: string = 'default';
 
-  mode1_val = 1;
-  mode2_val = 1;
+  mode1_val: string = "none";
+  mode2_val: string = "none";
+  cam_val: string = "cam_1";
 
   @ViewChild("accelChart", { static: false })
   public refAccelChart: ElementRef;
@@ -75,7 +76,7 @@ export class AppComponent implements OnInit {
   @ViewChild("imageContainer", { static: false }) imageContainerElement: ElementRef;
   rotationAngle: number;
 
-  constructor(private backend: BackendService, private animationBuilder: AnimationBuilder) {
+  constructor(private backend: BackendService, private animationBuilder: AnimationBuilder, private elRef: ElementRef) {
     this.accelChartData = {};
     this.gyroChartData = {};
 
@@ -374,6 +375,8 @@ export class AppComponent implements OnInit {
     }
   }
 
-
+  sendCamSettings(){
+    this.backend.sendCamSettings(this.data_url+"cam_control", this.cam_val, this.mode1_val, this.mode2_val)
+  }
 }
 

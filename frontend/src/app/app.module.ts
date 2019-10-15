@@ -4,7 +4,7 @@ import {HttpModule} from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { GestureConfig } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
+import {FormsModule} from '@angular/forms';
 
 import {
   MatCardModule, 
@@ -40,6 +40,7 @@ import { AppComponent } from './app.component';
     MatSliderModule,
     BrowserModule,
     HttpModule,
+    FormsModule,
     HttpClientModule
   ],
   exports:[

@@ -47,10 +47,18 @@ export class BackendService {
 
   /** POST: send motor speed in % */
   sendMotorSpeed(api: string, motorType: string, speed: number): Observable<number> {
-
+    //console.log(api + "?" + motorType + "=" + speed)
     return this.http.get<number>(api + "?" + motorType + "=" + speed)
       .pipe(
         catchError(this.handleError('sendMotorSpeed', speed))
+      );
+  }
+  /** POST: send input settings for cameras*/
+  sendCamSettings(api: string, cam_sel: string, filter1: string, filter2: string): Observable<number> {
+    //console.log(api + "?cam_sel=" + cam_sel + "&filter_1="+filter1 + "&filter_2="+filter2)
+    return this.http.get<number>(api + "?cam_sel=" + cam_sel + "&filter_1="+filter1 + "&filter_2="+filter2)
+      .pipe(
+        catchError(this.handleError('set cam settings', 1))
       );
   }
 

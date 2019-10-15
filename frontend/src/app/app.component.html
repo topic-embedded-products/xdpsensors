@@ -13,9 +13,9 @@
                 <div class="cam-ctrl">
                     <h2> Camera control</h2>
                     <div class="cam-select">
-                        <mat-radio-group aria-label="Select a camera">
-                            <mat-radio-button value="1" checked>Cam 1</mat-radio-button>
-                            <mat-radio-button value="2">Cam 2</mat-radio-button>
+                        <mat-radio-group [(ngModel)]="cam_val" aria-label="Select a camera">
+                            <mat-radio-button value="cam_1" checked>Cam 1</mat-radio-button>
+                            <mat-radio-button value="cam_2">Cam 2</mat-radio-button>
                         </mat-radio-group>
                     </div>
                     <div class="arrow-cam-select">
@@ -25,10 +25,10 @@
                         <mat-form-field>
                             <mat-label>Select the first filter</mat-label>
                             <mat-select [(value)]="mode1_val">
-                                <mat-option>None</mat-option>
-                                <mat-option value=1>Contrast</mat-option>
-                                <mat-option value=2>Grayscale</mat-option>
-                                <mat-option value=3>Threshold</mat-option>
+                                <mat-option value="none">None</mat-option>
+                                <mat-option value="Contrast">Contrast</mat-option>
+                                <mat-option value="Grayscale">Grayscale</mat-option>
+                                <mat-option value="Threshold">Threshold</mat-option>
                             </mat-select>
                         </mat-form-field>
                     </div>
@@ -39,10 +39,10 @@
                         <mat-form-field>
                             <mat-label>Select the second filter</mat-label>
                             <mat-select [(value)]="mode2_val">
-                                <mat-option>None</mat-option>
-                                <mat-option value=1>Contrast</mat-option>
-                                <mat-option value=2>Grayscale</mat-option>
-                                <mat-option value=3>Threshold</mat-option>
+                                <mat-option value="none">None</mat-option>
+                                <mat-option value="Contrast">Contrast</mat-option>
+                                <mat-option value="Grayscale">Grayscale</mat-option>
+                                <mat-option value="Threshold">Threshold</mat-option>
                             </mat-select>
                         </mat-form-field>
                     </div>
@@ -50,7 +50,7 @@
                         <img [src]=arrow_right_img_path>
                     </div>
                     <div class="cam-btn-apply">
-                        <button class="bnt-cam" mat-raised-button>Apply</button>
+                        <button (click)="sendCamSettings()" class="bnt-cam" mat-raised-button>Apply</button>
                     </div>
                     <div class="arrow-apply">
                         <img [src]=arrow_up_img_path>
