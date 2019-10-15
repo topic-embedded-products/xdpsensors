@@ -59,6 +59,9 @@ export class AppComponent implements OnInit {
   arrow_up_img_path = "assets/img/arrow_up.png"
   state: string = 'default';
 
+  mode1_val = 1;
+  mode2_val = 1;
+
   @ViewChild("accelChart", { static: false })
   public refAccelChart: ElementRef;
   public accelChartData: any = {};
