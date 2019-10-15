@@ -7,11 +7,6 @@ import iio
 import iiosensors
 import json
 import os, time
-              
-motorSpeed_1 = 0
-motorSpeed_2 = 0
-motorSpeed_3 = 0
-motorSpeed_4 = 0
 
 xdp_last_sample = 0
 raptor_last_sample = 0
@@ -19,6 +14,39 @@ last_time = time.time();
 
 xdp_last_thr = -1
 raptor_last_thr = -1
+
+hwpath = "/sys/class/hwmon"
+hwdirs = os.listdir(hwpath)
+motor1_path = ''
+motor2_path = ''
+motor3_path = ''
+motor4_path = ''
+for hwdir in hwdirs:
+    hwmondir = hwpath + '/' + hwdir
+    hwmondirs = os.listdir(hwmondir)
+    for hwfile in hwmondirs:
+        if (hwfile == 'name'):
+            filepath = hwmondir+'/'+hwfile
+            namefile = open(filepath, 'r')
+            name_str = namefile.readline()
+            if name_str[:-1] == "topicmotor": # remove new line    
+                motor_dir = hwmondir            
+                motor_files = os.listdir(motor_dir)
+                for pwm_file in motor_files:
+                    print pwm_file
+                    if pwm_file == "pwm1":
+                        motor1_path = hwmondir+'/'+pwm_file
+                        motorSpeed_1 = open(motor1_path, 'r').readline()
+                    if pwm_file == "pwm2":
+                        motor2_path = hwmondir+'/'+pwm_file
+                        motorSpeed_2 = open(motor2_path, 'r').readline()
+                    if pwm_file == "pwm3":
+                        motor3_path = hwmondir+'/'+pwm_file
+                        motorSpeed_3 = open(motor3_path, 'r').readline()
+                    if pwm_file == "pwm4":
+                        motor4_path = hwmondir+'/'+pwm_file
+                        motorSpeed_4 = open(motor4_path, 'r').readline()
+
 
 class DynamicResource(resource.Resource):
     #isLeaf = True
@@ -130,6 +158,10 @@ class MotorSpeedResource(DynamicResource):
         global motorSpeed_2
         global motorSpeed_3
         global motorSpeed_4
+        global motor1_path
+        global motor2_path
+        global motor3_path
+        global motor4_path
         request.setHeader('Access-Control-Allow-Origin', '*')
         count = 0
         exists = False
@@ -139,7 +171,9 @@ class MotorSpeedResource(DynamicResource):
                 lv_speed = speedArray[count][0]
                 if  int(lv_speed) >= 0:
                     motorSpeed_1 = lv_speed
-                    print ("Motor 1 speed set: "+str(motorSpeed_1))
+                    f = open(motor1_path,'w')
+                    f.write(motorSpeed_1)
+                    f.close()
                     return "{0}".format(motorSpeed_1)
                 else:
                     return "{0}".format(motorSpeed_1)
@@ -149,7 +183,9 @@ class MotorSpeedResource(DynamicResource):
                 lv_speed = speedArray[count][0]
                 if  int(lv_speed) >= 0:
                     motorSpeed_2 = lv_speed
-                    print ("Motor 2 speed set: "+str(motorSpeed_2))
+                    f = open(motor2_path,'w')
+                    f.write(motorSpeed_2)
+                    f.close()
                     return "{0}".format(motorSpeed_2)
                 else:
                     return "{0}".format(motorSpeed_2)
@@ -159,7 +195,9 @@ class MotorSpeedResource(DynamicResource):
                 lv_speed = speedArray[count][0]
                 if  int(lv_speed) >= 0:
                     motorSpeed_3 = lv_speed
-                    print ("Motor 3 speed set: "+str(motorSpeed_3))
+                    f = open(motor3_path,'w')
+                    f.write(motorSpeed_3)
+                    f.close()
                     return "{0}".format(motorSpeed_3)
                 else:
                     return "{0}".format(motorSpeed_3)
@@ -169,7 +207,9 @@ class MotorSpeedResource(DynamicResource):
                 lv_speed = speedArray[count][0]
                 if  int(lv_speed) >= 0:
                     motorSpeed_4 = lv_speed
-                    print ("Motor 4 speed set: "+str(motorSpeed_4))
+                    f = open(motor4_path,'w')
+                    f.write(motorSpeed_4)
+                    f.close()
                     return "{0}".format(motorSpeed_4)
                 else:
                     return "{0}".format(motorSpeed_4)
