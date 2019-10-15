@@ -185,7 +185,8 @@ export class AppComponent implements OnInit {
         .pipe(
           switchMap(() => this.backend.getSensorData<Data_Througput>(this.data_url+"throughput")))
         .subscribe(result => {
-          this.data_thr = result;
+          console.log(result)
+            this.data_thr = result;
       });
 
     this.accelChartData = {

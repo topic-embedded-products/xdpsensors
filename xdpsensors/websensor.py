@@ -6,11 +6,19 @@ from twisted.web.static import File
 import iio
 import iiosensors
 import json
+import os, time
               
 motorSpeed_1 = 0
 motorSpeed_2 = 0
 motorSpeed_3 = 0
 motorSpeed_4 = 0
+
+xdp_last_sample = 0
+raptor_last_sample = 0
+last_time = time.time();
+
+xdp_last_thr = -1
+raptor_last_thr = -1
 
 class DynamicResource(resource.Resource):
     #isLeaf = True
@@ -191,6 +199,45 @@ class AmsResource(DynamicResource):
         app_json = json.dumps(self.sensorDict)
         return bytes(app_json)
 
+class ThroughputResource(resource.Resource):
+    def render_GET(self, request):
+        global xdp_last_sample
+        global raptor_last_sample
+        global last_time
+        global xdp_last_thr
+        global raptor_last_thr
+        curr_time = time.time()
+        bit_data_width = 256
+        scale = 8*1024*1024 # MB
+        xdp_addr = "0xA0002000"
+        raptor_addr = "0xA0002010"
+        self.ByteData = {}
+        request.setHeader("refresh", "1");
+        request.responseHeaders.addRawHeader(b"content-type", b"application/json")
+        request.setHeader('Access-Control-Allow-Origin', '*')
+        diff = curr_time - last_time
+        if (diff > 1): # more than a second passed
+            xdp_current_sample = int(os.popen("devmem {}".format(xdp_addr)).read(), 0)
+            if (xdp_current_sample > xdp_last_sample):
+                xdp_throughput = (xdp_current_sample - xdp_last_sample)*bit_data_width
+            else:
+                xdp_throughput = (0xFFFFFFFF - xdp_last_sample + xdp_current_sample)*bit_data_width
+            xdp_last_sample = xdp_current_sample
+            raptor_current_sample = int(os.popen("devmem {}".format(raptor_addr)).read(), 0)
+            if (raptor_current_sample > raptor_last_sample):
+                raptor_throughput = (raptor_current_sample - raptor_last_sample)*bit_data_width
+            else:
+                raptor_throughput = (0xFFFFFFFF - raptor_last_sample + raptor_current_sample)*bit_data_width
+            raptor_last_sample = raptor_current_sample
+            xdp_last_thr = int((xdp_throughput / scale) / diff)
+            raptor_last_thr = int((raptor_throughput / scale) / diff)
+            last_time = curr_time;
+        self.ByteData["XDP"] = xdp_last_thr
+        self.ByteData["Raptor"] = raptor_last_thr
+        self.ByteData["Time"] = diff    
+        app_json = json.dumps(self.ByteData)
+        return bytes(app_json)
+        
 class CachedFile(static.File):
     def render_GET(self, request):
         request.setHeader("cache-control", "max-age=3600, public")
@@ -206,6 +253,7 @@ def getWebService(uri = None, port = 9990, root = '/var/www'):
     root.putChild("bmm150_magn", Bmm150Resource(uri))
     root.putChild("ams", AmsResource(uri))
     root.putChild("motorspeed", MotorSpeedResource(uri))
+    root.putChild("throughput", ThroughputResource())
     #root.putChild("video", File('/var/www/localhost/html/vid_test.mp4'))
     site = server.Site(root)
     return internet.TCPServer(port, site)
