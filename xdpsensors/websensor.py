@@ -219,7 +219,7 @@ class MotorSpeedResource(DynamicResource):
                 break;
             else:
                 count += 1
-    return "-1"
+        return "-1"
         
 		
 class AmsResource(DynamicResource):
