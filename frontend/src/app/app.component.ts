@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 import { BackendService, BME680, AMS, BMI088_ACCEL, BMI088_GYRO, BMM150_MAGN, Data_Througput } from './backend.service';
 import 'rxjs/add/operator/map'
-import { Subscription, timer, pipe, from } from 'rxjs';
+import { Subscription, timer, pipe, from, interval } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { MatSliderChange, MatRadioButton } from '@angular/material'
 import { Chart } from 'chart.js';
@@ -22,11 +22,10 @@ import { AnimationBuilder } from '@angular/animations';
   ]
 })
 
-
 export class AppComponent implements OnInit {
 
   private data_url: string = "http://" + window.location.hostname + ":9990/";
-  public video_loc: string = "http://" + window.location.hostname + ":9991/"; 
+  public video_loc: string = this.data_url+"video"; 
   title = 'drone-frontend';
   private sensorData: Observable<any>
   bme: BME680;
@@ -46,6 +45,8 @@ export class AppComponent implements OnInit {
   motorspeed3_subscription: Subscription;
   motorspeed4_subscription: Subscription;
   data_thr_subscription: Subscription;
+  frame_poll: Subscription;
+  frame_interval = 250; //ms
   subInterval = 1000; //ms
 
   motorSpeed_1 = 0;
@@ -139,6 +140,8 @@ export class AppComponent implements OnInit {
       this.motorSpeed_4 = result;
     });
     
+    this.frame_poll = timer(0, this.frame_interval).subscribe(val => {this.setLinkPicture(this.video_loc);});
+
     this.bmm150_magn_subscription = timer(0, this.subInterval)
       .pipe(
         switchMap(() => this.backend.getSensorData<BMM150_MAGN>(this.data_url+"bmm150_magn")))
@@ -189,7 +192,6 @@ export class AppComponent implements OnInit {
         .pipe(
           switchMap(() => this.backend.getSensorData<Data_Througput>(this.data_url+"throughput")))
         .subscribe(result => {
-          console.log(result)
             this.data_thr = result;
       });
 
@@ -242,6 +244,7 @@ export class AppComponent implements OnInit {
     this.motorspeed3_subscription.unsubscribe();
     this.motorspeed4_subscription.unsubscribe();
     this.data_thr_subscription.unsubscribe();
+    this.frame_poll.unsubscribe();
   }
 
   public ngAfterViewInit() {
@@ -376,7 +379,22 @@ export class AppComponent implements OnInit {
   }
 
   sendCamSettings(){
-    this.backend.sendCamSettings(this.data_url+"cam_control", this.cam_val, this.mode1_val, this.mode2_val)
+    this.backend.sendCamSettings(this.data_url+"cam_control", this.cam_val, this.mode1_val, this.mode2_val).subscribe()
   }
+
+  linkPicture: string;
+  timeStamp : number;
+  getLinkPicture() {
+    if(this.timeStamp) {
+       return this.linkPicture + '?' + this.timeStamp;
+    }
+    return this.linkPicture;
+  }
+  
+  setLinkPicture(url: string) {
+    this.linkPicture = url;
+    this.timeStamp = (new Date()).getTime();
+  }
+
 }
 

@@ -1,7 +1,7 @@
 PIDFILE=/var/run/xdpsensors.pid
 case "$1" in
     start)
-        gst-launch-1.0 videotestsrc ! video/x-raw,width=720,height=480,framerate=5/1 ! theoraenc ! oggmux ! tcpserversink host=0.0.0.0 port=9991 &
+        xdp-dyplo-app -c 2 -s -w 960 -h 540 -f - | gst-launch-1.0 fdsrc fd=0 blocksize=2073600 do-timestamp=true ! rawvideoparse use-sink-caps=false width=960 height=540 format=rgbx framerate=60/1 ! videoconvert ! jpegenc ! multifilesink location=/tmp/frame.jpg &
         twistd --pidfile $PIDFILE -o -y /var/www/xdpsensors.tac
         ;;
     stop)

@@ -7,6 +7,7 @@ import iio
 import iiosensors
 import json
 import os, time
+import subprocess
 
 xdp_last_sample = 0
 raptor_last_sample = 0
@@ -296,6 +297,47 @@ class CamControlResource(resource.Resource):
             if item == "filter_2":
                 filter_2 = data[count][0]
             count = count +1
+        
+        if (cam_sel == "cam_1"):
+            cam_arg = "0,0"
+        elif (cam_sel == "cam_2"):
+            cam_arg = "1,0"
+            #consume cam_1 pipe since it will block bandwidth
+            subprocess.Popen(["dyploroute", "0,0-1,0"])
+        else: # default                    
+            cam_arg = "0,0"
+        if (filter_1 != "none"):
+            subprocess.Popen(["dyploroute", "{}-3,0".format(cam_arg)])
+            if (filter_1 == "Contrast"):
+                filter1_arg = "rgb_contrast"
+            elif (filter_1 == "Grayscale"):
+                filter1_arg = "rgb_grayscale"
+            elif (filter_1 == "Threshold"):
+                filter1_arg = "rgb_threshold"
+            else:
+                filter1_arg = "rgb_grayscale"
+            subprocess.Popen(["dyploprogrammer", "{}".format(filter1_arg), "3"])
+        
+        if (filter_2 != "none"):
+            if(filter_1 != "none"):
+                subprocess.Popen(["dyploroute", "3,0-4,0"])
+            else:
+                subprocess.Popen(["dyploroute", "{}-4,0".format(cam_arg)])
+            if (filter_2 == "Contrast"):
+                filter2_arg = "rgb_contrast"
+            elif (filter_2 == "Grayscale"):
+                filter2_arg = "rgb_grayscale"
+            elif (filter_2 == "Threshold"):
+                filter2_arg = "rgb_threshold"
+            else:
+                filter2_arg = "rgb_grayscale"
+            subprocess.Popen(["dyploprogrammer", "{}".format(filter2_arg), "4"])
+            subprocess.Popen(["dyploroute", "4,0-2,0"])
+        else:
+            if(filter_1 != "none"):
+                subprocess.Popen(["dyploroute", "3,0-2,0"])
+            else:
+                subprocess.Popen(["dyploroute", "{}-2,0".format(cam_arg)])        
         return "-1"
         
 class CachedFile(static.File):
@@ -315,7 +357,7 @@ def getWebService(uri = None, port = 9990, root = '/var/www'):
     root.putChild("motorspeed", MotorSpeedResource(uri))
     root.putChild("cam_control", CamControlResource())
     root.putChild("throughput", ThroughputResource())
-    #root.putChild("video", File('/var/www/localhost/html/vid_test.mp4'))
+    root.putChild("video", File('/tmp/frame.jpg'))
     site = server.Site(root)
     return internet.TCPServer(port, site)
 
