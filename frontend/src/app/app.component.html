@@ -13,7 +13,7 @@
                 <img [src]="getLinkPicture()" alt="Video Frame" width="720px" height="480px" >
 
                 <div class="cam-ctrl">
-                    <h2> Camera control</h2>
+                    <h2> HDMI Camera control</h2>
                     <div class="cam-select">
                         <mat-radio-group [(ngModel)]="cam_val" aria-label="Select a camera">
                             <mat-radio-button value="cam_1" checked>Cam 1</mat-radio-button>
@@ -54,9 +54,9 @@
                     <div class="cam-btn-apply">
                         <button (click)="sendCamSettings()" class="bnt-cam" mat-raised-button>Apply</button>
                     </div>
-                    <div class="arrow-apply">
+                    <!-- <div class="arrow-apply">
                         <img [src]=arrow_up_img_path>
-                    </div>
+                    </div> -->
                     <div class="compass-dyplo-logo">
                         <div class="dyplo-logo">
                             <img class="dyplo" [src]=dyplo_img_path width="100%" height="100%">

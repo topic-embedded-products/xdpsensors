@@ -343,6 +343,7 @@ export class AppComponent implements OnInit {
     this.backend.getSensorData<Data_Througput>(this.data_url+"throughput")
       .subscribe(
         data => {
+          console.log(data);
           this.data_thr = data
         }
       )

@@ -16,6 +16,8 @@ last_time = time.time();
 xdp_last_thr = -1
 raptor_last_thr = -1
 
+webcam_curr = "1,0"
+
 hwpath = "/sys/class/hwmon"
 hwdirs = os.listdir(hwpath)
 motor1_path = ''
@@ -289,6 +291,7 @@ class CamControlResource(resource.Resource):
         request.setHeader('Access-Control-Allow-Origin', '*')
         count = 0
         data = request.args.values()
+        global webcam_curr
         for item in request.args:
             if item == "cam_sel":
                 cam_sel = data[count][0]
@@ -300,12 +303,25 @@ class CamControlResource(resource.Resource):
         
         if (cam_sel == "cam_1"):
             cam_arg = "0,0"
+            #rerout cam_2 to HDMI
+            subprocess.Popen(["dyploroute", "0,0-6,0"])
+            if (webcam_curr != "1,0"):
+                subprocess.Popen(["dyploroute", "1,0-2,0"])
+                webcam_curr = "1,0"
         elif (cam_sel == "cam_2"):
             cam_arg = "1,0"
-            #consume cam_1 pipe since it will block bandwidth
-            subprocess.Popen(["dyploroute", "0,0-1,0"])
+            #rerout cam_1 to HDMI
+            subprocess.Popen(["dyploroute", "0,0-6,0"])
+            if (webcam_curr != "0,0"):
+                subprocess.Popen(["dyploroute", "0,0-2,0"])
+                webcam_curr = "0,0"
         else: # default                    
             cam_arg = "0,0"
+            subprocess.Popen(["dyploroute", "1,0-6,0"])
+            if (webcam_curr != "1,0"):
+                subprocess.Popen(["dyploroute", "1,0-2,0"])
+                webcam_curr = "1,0"
+            
         if (filter_1 != "none"):
             subprocess.Popen(["dyploroute", "{}-3,0".format(cam_arg)])
             if (filter_1 == "Contrast"):
@@ -332,12 +348,12 @@ class CamControlResource(resource.Resource):
             else:
                 filter2_arg = "rgb_grayscale"
             subprocess.Popen(["dyploprogrammer", "{}".format(filter2_arg), "4"])
-            subprocess.Popen(["dyploroute", "4,0-2,0"])
+            subprocess.Popen(["dyploroute", "4,0-6,0"])
         else:
             if(filter_1 != "none"):
-                subprocess.Popen(["dyploroute", "3,0-2,0"])
+                subprocess.Popen(["dyploroute", "3,0-6,0"])
             else:
-                subprocess.Popen(["dyploroute", "{}-2,0".format(cam_arg)])        
+                subprocess.Popen(["dyploroute", "{}-6,0".format(cam_arg)])        
         return "-1"
         
 class CachedFile(static.File):

@@ -1,11 +1,13 @@
 PIDFILE=/var/run/xdpsensors.pid
 case "$1" in
     start)
-        dyploroute 0,0-2,0
         xdp-dyplo-app -c 2 -s -w 960 -h 540 -f - | \
         gst-launch-1.0 fdsrc fd=0 blocksize=2073600 do-timestamp=true ! \
-        rawvideoparse use-sink-caps=false width=960 height=540 format=rgbx framerate=60/1 ! \
+        rawvideoparse use-sink-caps=false width=960 height=540 format=bgrx framerate=60/1 ! \
         videoconvert ! jpegenc ! multifilesink location=/tmp/frame.jpg &
+        sleep 1
+        xdp-dyplo-app -c 0 &
+        dyploroute 1,0-2,0
         twistd --pidfile $PIDFILE -o -y /var/www/xdpsensors.tac
         ;;
     stop)
