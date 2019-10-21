@@ -303,16 +303,18 @@ class CamControlResource(resource.Resource):
         
         if (cam_sel == "cam_1"):
             cam_arg = "0,0"
-            #rerout cam_2 to HDMI
+            #rerout cam_1 to HDMI
             subprocess.Popen(["dyploroute", "0,0-6,0"])
             if (webcam_curr != "1,0"):
+                #rerout cam_2 to WebCam
                 subprocess.Popen(["dyploroute", "1,0-2,0"])
                 webcam_curr = "1,0"
         elif (cam_sel == "cam_2"):
             cam_arg = "1,0"
-            #rerout cam_1 to HDMI
-            subprocess.Popen(["dyploroute", "0,0-6,0"])
+            #rerout cam_2 to HDMI
+            subprocess.Popen(["dyploroute", "1,0-6,0"])
             if (webcam_curr != "0,0"):
+                #rerout cam_1 to WebCam
                 subprocess.Popen(["dyploroute", "0,0-2,0"])
                 webcam_curr = "0,0"
         else: # default                    
