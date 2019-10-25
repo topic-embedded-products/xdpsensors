@@ -265,13 +265,13 @@ class ThroughputResource(resource.Resource):
         diff = curr_time - last_time
         if (diff > 1): # more than a second passed
             xdp_current_sample = int(os.popen("devmem {}".format(xdp_addr)).read(), 0)
-            if (xdp_current_sample > xdp_last_sample):
+            if (xdp_current_sample >= xdp_last_sample):
                 xdp_throughput = (xdp_current_sample - xdp_last_sample)*bit_data_width
             else:
                 xdp_throughput = (0xFFFFFFFF - xdp_last_sample + xdp_current_sample)*bit_data_width
             xdp_last_sample = xdp_current_sample
             raptor_current_sample = int(os.popen("devmem {}".format(raptor_addr)).read(), 0)
-            if (raptor_current_sample > raptor_last_sample):
+            if (raptor_current_sample >= raptor_last_sample):
                 raptor_throughput = (raptor_current_sample - raptor_last_sample)*bit_data_width
             else:
                 raptor_throughput = (0xFFFFFFFF - raptor_last_sample + raptor_current_sample)*bit_data_width
