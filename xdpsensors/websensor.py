@@ -257,7 +257,7 @@ class ThroughputResource(resource.Resource):
         bit_data_width = 256
         scale = 8*1024*1024 # MB
         xdp_addr = "0xA0002000"
-        raptor_addr = "0xA0002010"
+        raptor_addr = "0xA0002008"
         self.ByteData = {}
         request.setHeader("refresh", "1");
         request.responseHeaders.addRawHeader(b"content-type", b"application/json")
