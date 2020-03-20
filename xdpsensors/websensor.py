@@ -364,7 +364,7 @@ class CachedFile(static.File):
         return static.File.render_GET(self, request)
 
 
-def getWebService(uri = None, port = 9990, root = '/var/www'):
+def getWebService(uri = None, port = 80, root = '/var/www'):
     root = CachedFile(root)
     root.putChild("dynamic", DynamicResource(uri))
     root.putChild("bmi088_accel", Bmi088AccelResource(uri))

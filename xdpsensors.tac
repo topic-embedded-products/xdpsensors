@@ -7,11 +7,10 @@ port = os.environ.get('XDP_PORT')
 if port:
     port = int(port)
 else:
-    port = 9990
-root = os.environ.get('XDP_ROOT') or '/var/www'
+    port = 80
+root = os.environ.get('XDP_ROOT') or '/var/www/localhost/html/drone-frontend'
 
 application = service.Application("XDP Webserver")
 svc = websensor.getWebService(uri, port, root)
 svc.setServiceParent(application)
-
 
