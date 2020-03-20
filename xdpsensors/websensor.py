@@ -36,7 +36,6 @@ for hwdir in hwdirs:
                 motor_dir = hwmondir            
                 motor_files = os.listdir(motor_dir)
                 for pwm_file in motor_files:
-                    print pwm_file
                     if pwm_file == "pwm1":
                         motor1_path = hwmondir+'/'+pwm_file
                         motorSpeed_1 = open(motor1_path, 'r').readline()
@@ -63,7 +62,6 @@ class DynamicResource(resource.Resource):
             return self
         return resource.Resource.getChild(self, name, request)
     def set_default_headers(self):
-        print "setting headers!!!"
         self.set_header("Access-Control-Allow-Origin", "*")
         self.set_header("Access-Control-Allow-Headers", "x-requested-with")
         self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
