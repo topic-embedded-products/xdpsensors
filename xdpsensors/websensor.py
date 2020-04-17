@@ -20,10 +20,10 @@ webcam_curr = "1,0"
 
 hwpath = "/sys/class/hwmon"
 hwdirs = os.listdir(hwpath)
-motor1_path = ''
-motor2_path = ''
-motor3_path = ''
-motor4_path = ''
+motor1_path = '/pwm1'
+motor2_path = '/pwm2'
+motor3_path = '/pwm3'
+motor4_path = '/pwm4'
 for hwdir in hwdirs:
     hwmondir = hwpath + '/' + hwdir
     hwmondirs = os.listdir(hwmondir)
@@ -38,7 +38,7 @@ for hwdir in hwdirs:
                 for pwm_file in motor_files:
                     print pwm_file
                     if pwm_file == "pwm1":
-                        motor1_path = hwmondir+'/'+pwm_file
+                        motor1_path = /pwm1
                         motorSpeed_1 = open(motor1_path, 'r').readline()
                     if pwm_file == "pwm2":
                         motor2_path = hwmondir+'/'+pwm_file
@@ -177,7 +177,7 @@ class MotorSpeedResource(DynamicResource):
                 if  int(lv_speed) >= 0:
                     motorSpeed_1 = lv_speed
                     f = open(motor1_path,'w')
-                    f.write(motorSpeed_1)
+                    f.write(motorSpeed_1 + "\n")
                     f.close()
                     return "{0}".format(motorSpeed_1)
                 else:
