@@ -18,36 +18,38 @@ raptor_last_thr = -1
 
 webcam_curr = "1,0"
 
-hwpath = "/sys/class/hwmon"
-hwdirs = os.listdir(hwpath)
-motor1_path = '/pwm1'
-motor2_path = '/pwm2'
-motor3_path = '/pwm3'
-motor4_path = '/pwm4'
-for hwdir in hwdirs:
-    hwmondir = hwpath + '/' + hwdir
-    hwmondirs = os.listdir(hwmondir)
-    for hwfile in hwmondirs:
-        if (hwfile == 'name'):
-            filepath = hwmondir+'/'+hwfile
-            namefile = open(filepath, 'r')
-            name_str = namefile.readline()
-            if name_str[:-1] == "topicmotor": # remove new line    
-                motor_dir = hwmondir            
-                motor_files = os.listdir(motor_dir)
-                for pwm_file in motor_files:
-                    if pwm_file == "pwm1":
-                        motor1_path = /pwm1
-                        motorSpeed_1 = open(motor1_path, 'r').readline()
-                    if pwm_file == "pwm2":
-                        motor2_path = hwmondir+'/'+pwm_file
-                        motorSpeed_2 = open(motor2_path, 'r').readline()
-                    if pwm_file == "pwm3":
-                        motor3_path = hwmondir+'/'+pwm_file
-                        motorSpeed_3 = open(motor3_path, 'r').readline()
-                    if pwm_file == "pwm4":
-                        motor4_path = hwmondir+'/'+pwm_file
-                        motorSpeed_4 = open(motor4_path, 'r').readline()
+#hwpath = "/sys/class/hwmon"
+#hwdirs = os.listdir(hwpath)
+motor1_path = '/qdesys/pwm1'
+motor2_path = '/qdesys/pwm2'
+motor3_path = '/qdesys/pwm3'
+motor4_path = '/qdesys/pwm4'
+# Old from Ilja
+#for hwdir in hwdirs:
+#    hwmondir = hwpath + '/' + hwdir
+#    hwmondirs = os.listdir(hwmondir)
+#    for hwfile in hwmondirs:
+#        if (hwfile == 'name'): 
+#           filepath = hwmondir+'/'+hwfile
+#           namefile = open(filepath, 'r')
+#            name_str = namefile.readline()
+#            if name_str[:-1] == "topicmotor": # remove new line    
+#                motor_dir = hwmondir            
+#                motor_files = os.listdir(motor_dir)
+#                for pwm_file in motor_files:
+#                    if pwm_file == "pwm1":
+#                        motor1_path = /pwm1
+#                        motorSpeed_1 = open(motor1_path, 'r').readline()
+#                    if pwm_file == "pwm2":
+#                        motor2_path = hwmondir+'/'+pwm_file
+#                        motorSpeed_2 = open(motor2_path, 'r').readline()
+#                    if pwm_file == "pwm3":
+#                        motor3_path = hwmondir+'/'+pwm_file
+#                        motorSpeed_3 = open(motor3_path, 'r').readline()
+#                    if pwm_file == "pwm4":
+#                        motor4_path = hwmondir+'/'+pwm_file
+#                        motorSpeed_4 = open(motor4_path, 'r').readline()
+
 
 
 class DynamicResource(resource.Resource):
@@ -187,7 +189,7 @@ class MotorSpeedResource(DynamicResource):
                 if  int(lv_speed) >= 0:
                     motorSpeed_2 = lv_speed
                     f = open(motor2_path,'w')
-                    f.write(motorSpeed_2)
+                    f.write(motorSpeed_2 + "\n")
                     f.close()
                     return "{0}".format(motorSpeed_2)
                 else:
@@ -199,7 +201,7 @@ class MotorSpeedResource(DynamicResource):
                 if  int(lv_speed) >= 0:
                     motorSpeed_3 = lv_speed
                     f = open(motor3_path,'w')
-                    f.write(motorSpeed_3)
+                    f.write(motorSpeed_3 + "\n")
                     f.close()
                     return "{0}".format(motorSpeed_3)
                 else:
@@ -211,7 +213,7 @@ class MotorSpeedResource(DynamicResource):
                 if  int(lv_speed) >= 0:
                     motorSpeed_4 = lv_speed
                     f = open(motor4_path,'w')
-                    f.write(motorSpeed_4)
+                    f.write(motorSpeed_4 + "\n")
                     f.close()
                     return "{0}".format(motorSpeed_4)
                 else:
