@@ -125,6 +125,6 @@ root.putChild("test", FormPage())
 
 #wrapped = EncodingResourceWrapper(resource, [GzipEncoderFactory()])
 site = Site(root)
-endpoint = endpoints.TCP4ServerEndpoint(reactor, 9990)
+endpoint = endpoints.TCP4ServerEndpoint(reactor, 80)
 endpoint.listen(site)
 reactor.run()
