@@ -17,6 +17,7 @@ xdp_last_thr = -1
 raptor_last_thr = -1
 
 webcam_curr = "1,0"
+started = False
 
 #hwpath = "/sys/class/hwmon"
 #hwdirs = os.listdir(hwpath)
@@ -292,6 +293,10 @@ class CamControlResource(resource.Resource):
         count = 0
         data = request.args.values()
         global webcam_curr
+	global started
+	if (started == False):
+		started = True
+		subprocess.Popen(["cat", "/dev/start_stream"])
         for item in request.args:
             if item == "cam_sel":
                 cam_sel = data[count][0]

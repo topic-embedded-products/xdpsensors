@@ -9,9 +9,7 @@ case "$1" in
         sleep 1
         xdp-dyplo-app -c 0 &
         dyploroute 1,0-2,0
-        twistd --pidfile $PIDFILE -o -y /var/www/xdpsensors.tac &
-	sleep 1
-	cat /dev/start_stream
+        twistd --pidfile $PIDFILE -o -y /var/www/xdpsensors.tac
         ;;
     stop)
         if [ -e $PIDFILE ]
