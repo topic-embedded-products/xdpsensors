@@ -25,7 +25,7 @@ import { AnimationBuilder } from '@angular/animations';
 export class AppComponent implements OnInit {
 
   private data_url: string = "";
-  public video_loc: string = this.data_url+"video"; 
+  public video_loc: string = this.data_url+"video";
   title = 'drone-frontend';
   private sensorData: Observable<any>
   bme: BME680;
@@ -46,7 +46,7 @@ export class AppComponent implements OnInit {
   motorspeed4_subscription: Subscription;
   data_thr_subscription: Subscription;
   frame_poll: Subscription;
-  frame_interval = 250; //ms
+  frame_interval = 1000; //ms
   subInterval = 1000; //ms
 
   motorSpeed_1 = 0;
@@ -118,7 +118,7 @@ export class AppComponent implements OnInit {
     .subscribe(result => {
       this.motorSpeed_1 = result;
     });
-    
+
     this.motorspeed2_subscription = timer(0, this.subInterval)
     .pipe(
       switchMap(() => this.backend.sendMotorSpeed(this.data_url+"motorspeed", "motorSpeed_2", -1)))
@@ -139,7 +139,7 @@ export class AppComponent implements OnInit {
     .subscribe(result => {
       this.motorSpeed_4 = result;
     });
-    
+
     this.frame_poll = timer(0, this.frame_interval).subscribe(val => {this.setLinkPicture(this.video_loc);});
 
     this.bmm150_magn_subscription = timer(0, this.subInterval)
@@ -160,7 +160,7 @@ export class AppComponent implements OnInit {
         // }
         this.rotateCompass();
       });
-      
+
     this.bme680_subscription = timer(0, this.subInterval)
       .pipe(
         switchMap(() => this.backend.getSensorData<BME680>(this.data_url+"bme680")))
@@ -391,11 +391,10 @@ export class AppComponent implements OnInit {
     }
     return this.linkPicture;
   }
-  
+
   setLinkPicture(url: string) {
     this.linkPicture = url;
     this.timeStamp = (new Date()).getTime();
   }
 
 }
-
