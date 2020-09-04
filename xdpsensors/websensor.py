@@ -8,6 +8,7 @@ import iiosensors
 import json
 import os, time
 import subprocess
+from time import sleep
 
 xdp_last_sample = 0
 raptor_last_sample = 0
@@ -24,32 +25,6 @@ motor1_path = '/qdesys/pwm1'
 motor2_path = '/qdesys/pwm2'
 motor3_path = '/qdesys/pwm3'
 motor4_path = '/qdesys/pwm4'
-# Old from Ilja
-#for hwdir in hwdirs:
-#    hwmondir = hwpath + '/' + hwdir
-#    hwmondirs = os.listdir(hwmondir)
-#    for hwfile in hwmondirs:
-#        if (hwfile == 'name'): 
-#           filepath = hwmondir+'/'+hwfile
-#           namefile = open(filepath, 'r')
-#            name_str = namefile.readline()
-#            if name_str[:-1] == "topicmotor": # remove new line    
-#                motor_dir = hwmondir            
-#                motor_files = os.listdir(motor_dir)
-#                for pwm_file in motor_files:
-#                    if pwm_file == "pwm1":
-#                        motor1_path = /pwm1
-#                        motorSpeed_1 = open(motor1_path, 'r').readline()
-#                    if pwm_file == "pwm2":
-#                        motor2_path = hwmondir+'/'+pwm_file
-#                        motorSpeed_2 = open(motor2_path, 'r').readline()
-#                    if pwm_file == "pwm3":
-#                        motor3_path = hwmondir+'/'+pwm_file
-#                        motorSpeed_3 = open(motor3_path, 'r').readline()
-#                    if pwm_file == "pwm4":
-#                        motor4_path = hwmondir+'/'+pwm_file
-#                        motorSpeed_4 = open(motor4_path, 'r').readline()
-
 
 
 class DynamicResource(resource.Resource):
@@ -111,8 +86,8 @@ class Bme680Resource(DynamicResource):
                     #self.sensorDict[bme680_name][channel_name] = channel_value
         app_json = json.dumps(self.sensorDict)
         return bytes(app_json)
-        
-        
+
+
 class Bmm150Resource(DynamicResource):
     def render_GET(self, request):
         request.setHeader("refresh", "1");
@@ -133,7 +108,7 @@ class Bmm150Resource(DynamicResource):
                     #self.sensorDict[bmm150_name][channel_name] = channel_value
         app_json = json.dumps(self.sensorDict)
         return bytes(app_json)
-        
+
 
 class Bmi088GyroResource(DynamicResource):
     def render_GET(self, request):
@@ -155,11 +130,11 @@ class Bmi088GyroResource(DynamicResource):
                     self.sensorDict[channel_name] = channel_value
         app_json = json.dumps(self.sensorDict)
         return bytes(app_json)
-        
 
-class MotorSpeedResource(DynamicResource):   
-    isLeaf = True 
-    def render_GET(self, request):   
+
+class MotorSpeedResource(DynamicResource):
+    isLeaf = True
+    def render_GET(self, request):
         global motorSpeed_1
         global motorSpeed_2
         global motorSpeed_3
@@ -171,6 +146,7 @@ class MotorSpeedResource(DynamicResource):
         request.setHeader('Access-Control-Allow-Origin', '*')
         count = 0
         for item in request.args:
+            sleep(0.1)
             if item == "motorSpeed_1":
                 speedArray = request.args.values()
                 lv_speed = speedArray[count][0]
@@ -222,8 +198,8 @@ class MotorSpeedResource(DynamicResource):
             else:
                 count += 1
         return "-1"
-        
-		
+
+
 class AmsResource(DynamicResource):
     def render_GET(self, request):
         request.setHeader("refresh", "1");
@@ -244,7 +220,7 @@ class AmsResource(DynamicResource):
                     self.sensorDict[channel_name] = channel_value
         app_json = json.dumps(self.sensorDict)
         return bytes(app_json)
-        
+
 
 class ThroughputResource(resource.Resource):
     def render_GET(self, request):
@@ -281,11 +257,11 @@ class ThroughputResource(resource.Resource):
             last_time = curr_time;
         self.ByteData["XDP"] = xdp_last_thr
         self.ByteData["Raptor"] = raptor_last_thr
-        self.ByteData["Time"] = diff    
+        self.ByteData["Time"] = diff
         app_json = json.dumps(self.ByteData)
         return bytes(app_json)
-        
-        
+
+
 class CamControlResource(resource.Resource):
     def render_GET(self, request):
         request.setHeader('Access-Control-Allow-Origin', '*')
@@ -301,7 +277,7 @@ class CamControlResource(resource.Resource):
             if item == "filter_2":
                 filter_2 = data[count][0]
             count = count +1
-        
+
         if (cam_sel == "cam_1"):
             cam_arg = "0,0"
             #rerout cam_1 to HDMI
@@ -318,13 +294,13 @@ class CamControlResource(resource.Resource):
                 #rerout cam_1 to WebCam
                 subprocess.Popen(["dyploroute", "0,0-2,0"])
                 webcam_curr = "0,0"
-        else: # default                    
+        else: # default
             cam_arg = "0,0"
             subprocess.Popen(["dyploroute", "1,0-0,0"])
             if (webcam_curr != "1,0"):
                 subprocess.Popen(["dyploroute", "1,0-2,0"])
                 webcam_curr = "1,0"
-            
+
         if (filter_1 != "none"):
             subprocess.Popen(["dyploroute", "{}-3,0".format(cam_arg)])
             if (filter_1 == "Contrast"):
@@ -336,7 +312,7 @@ class CamControlResource(resource.Resource):
             else:
                 filter1_arg = "rgb_grayscale"
             subprocess.Popen(["dyploprogrammer", "{}".format(filter1_arg), "3"])
-        
+
         if (filter_2 != "none"):
             if(filter_1 != "none"):
                 subprocess.Popen(["dyploroute", "3,0-4,0"])
@@ -356,9 +332,9 @@ class CamControlResource(resource.Resource):
             if(filter_1 != "none"):
                 subprocess.Popen(["dyploroute", "3,0-0,0"])
             else:
-                subprocess.Popen(["dyploroute", "{}-0,0".format(cam_arg)])        
+                subprocess.Popen(["dyploroute", "{}-0,0".format(cam_arg)])
         return "-1"
-        
+
 class CachedFile(static.File):
     def render_GET(self, request):
         request.setHeader("cache-control", "max-age=3600, public")
@@ -379,4 +355,3 @@ def getWebService(uri = None, port = 80, root = '/var/www'):
     root.putChild("video", File('/tmp/frame.jpg'))
     site = server.Site(root)
     return internet.TCPServer(port, site)
-
