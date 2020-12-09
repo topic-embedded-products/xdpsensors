@@ -23,7 +23,11 @@ mat-grid-tile {
 .bg{
 	height:auto;
 	min-height: 50vh;
-	background-image:url(src/assets/img/bg.jpg);
+	background-color: rgb(100,100,100);
 	background-size:cover;
 	background-position:center;
+}
+
+.card {
+    background-color: rgb(100,100,100);
 }

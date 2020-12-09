@@ -4,10 +4,12 @@
   margin-left: 50px;
   max-width: 70%;
   min-width: 740px;
+  color: #000000
 }  
 
 .wrapper{
   overflow: hidden;
+  color: #FFFFFF;
 }
 
 .video-card {
@@ -37,12 +39,10 @@
 .accel-chart {
   margin: auto;
   width: 300px;
-  background-color: #FFFFFF;
 }
 .gyro-chart {
   margin: auto;
-  width: 300px;
-  background-color: #FFFFFF;
+  width: 300px; 
 }
 .radar-chart {
   margin: auto;
@@ -84,11 +84,27 @@
 .mode1-select{
   top: -100px;
   left: 145px;
-  // background: white;
   height: 50px;
   width: 200px;  
   position: relative;
+  color: #FFFFFF;
 }
+
+::ng-deep .mat-focused .mat-form-field-label {
+  /*change color of label*/
+  color: white !important;
+ }
+
+ ::ng-deep.mat-form-field-underline {
+  /*change color of underline*/
+  background-color: white !important;
+} 
+
+::ng-deep.mat-form-field-ripple {
+ /*change color of underline when focused*/
+ background-color: white !important;;
+}
+
 .arrow-mode1-select{
   top: -150px;
   left: 330px;
@@ -113,11 +129,13 @@
   width: 100px;  
   position: relative;
 }
+
 //center the button within div
 .bnt-cam{
   position: relative;
   top: 7px;
   left: 17px;
+  background-color:rgb(254,230,52);
 }
 .arrow-apply{
   top: -395px;

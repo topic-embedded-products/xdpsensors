@@ -56,6 +56,7 @@ export class AppComponent implements OnInit {
   data_throughput = 0;
   imagepath = "assets/img/com_ts.png"
   dyplo_img_path = "assets/img/Dyplo-logo.png"
+  temp_video_path = "assets/img/camera.jpg"
   arrow_right_img_path = "assets/img/arrow_right_sc.png"
   arrow_up_img_path = "assets/img/arrow_up.png"
   state: string = 'default';
@@ -215,7 +216,7 @@ export class AppComponent implements OnInit {
     };
 
     this.gyroChartData = {
-      labels: ["Gyro x", "Gyro y", "Gyro z"],
+      labels: ["Roll", "Pitch", "Yaw"],
       datasets: [{
         //label: '# of Votes',
         data: [0, 0, 0],
@@ -257,8 +258,14 @@ export class AppComponent implements OnInit {
         scales: {
           yAxes: [{
             ticks: {
-              suggestedMin: -360,
-              suggestedMax: 360
+              fontColor: "white",
+              suggestedMin: -1,
+              suggestedMax: 1
+            }
+          }],
+          xAxes: [{
+            ticks: {
+              fontColor: "white"
             }
           }]
         },
@@ -277,11 +284,18 @@ export class AppComponent implements OnInit {
         scales: {
           yAxes: [{
             ticks: {
+              fontColor: "white",
               suggestedMin: -1,
               suggestedMax: 1
             }
+          }],
+          xAxes: [{
+            ticks: {
+              fontColor: "white"
+            }
           }]
         },
+        
         legend: { display: false },
         tooltips: { enabled: false },
         hover: { mode: null }
