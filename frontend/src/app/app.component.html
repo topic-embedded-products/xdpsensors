@@ -106,25 +106,25 @@
                     <h2>Motor settings</h2>
                     <div>
                         <label class="motor-label-width">Motor 1 speed: {{motorSpeed_1}}</label>
-                        <mat-slider min="0" max="100" step="1" (input)="onMotor1Change($event)" value={{motorSpeed_1}}
+                        <mat-slider min="0" max="100" step="1" (change)="onMotor1Change($event)" value={{motorSpeed_1}}
                             class="motor-slider-length">
                         </mat-slider>
                     </div>
                     <div>
                         <label class="motor-label-width">Motor 2 speed: {{motorSpeed_2}}</label>
-                        <mat-slider min="0" max="100" step="1" (input)="onMotor2Change($event)" value={{motorSpeed_2}}
+                        <mat-slider min="0" max="100" step="1" (change)="onMotor2Change($event)" value={{motorSpeed_2}}
                             class="motor-slider-length">
                         </mat-slider>
                     </div>
                     <div>
                         <label class="motor-label-width">Motor 3 speed: {{motorSpeed_3}}</label>
-                        <mat-slider min="0" max="100" step="1" (input)="onMotor3Change($event)" value={{motorSpeed_3}}
+                        <mat-slider min="0" max="100" step="1" (change)="onMotor3Change($event)" value={{motorSpeed_3}}
                             class="motor-slider-length">
                         </mat-slider>
                     </div>
                     <div>
                         <label class="motor-label-width">Motor 4 speed: {{motorSpeed_4}}</label>
-                        <mat-slider min="0" max="100" step="1" (input)="onMotor4Change($event)" value={{motorSpeed_4}}
+                        <mat-slider min="0" max="100" step="1" (change)="onMotor4Change($event)" value={{motorSpeed_4}}
                             class="motor-slider-length">
                         </mat-slider>
                     </div>
