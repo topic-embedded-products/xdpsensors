@@ -113,6 +113,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.rotationAngle = 0;
     // get motor speed data (use negative number to get data)
+    /*
     this.motorspeed1_subscription = timer(0, this.subInterval)
     .pipe(
       switchMap(() => this.backend.sendMotorSpeed(this.data_url+"motorspeed", "motorSpeed_1", -1)))
@@ -140,6 +141,7 @@ export class AppComponent implements OnInit {
     .subscribe(result => {
       this.motorSpeed_4 = result;
     });
+    */
 
     this.frame_poll = timer(0, this.frame_interval).subscribe(val => {this.setLinkPicture(this.video_loc);});
 
