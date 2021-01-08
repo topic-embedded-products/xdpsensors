@@ -83,10 +83,11 @@ export class AppComponent implements OnInit {
     this.gyroChartData = {};
 
     this.bme = {
-      humidityrelative: 0,
+      humidityrelative: 13,
       pressure: 0,
       resistance: 0,
-      temp: 0
+      gps: "Testing the string",
+      temp: 40
     };
 
     this.bmi088_accel = {
@@ -169,6 +170,18 @@ export class AppComponent implements OnInit {
         switchMap(() => this.backend.getSensorData<BME680>(this.data_url+"bme680")))
       .subscribe(result => {
         this.bme = result;
+        var t1 = this.bme.temp + 273
+        var t2 = 25 + 273
+            
+        var	p0, deltaH, R
+        p0 = 1113360648
+        deltaH = 43760
+        R = 8.314
+
+        var sat_p1, sat_p2, vapor, rh2, dew
+        sat_p1 = p0 * Math.exp(-deltaH/(R*t1))
+        sat_p2 = p0 * Math.exp(-deltaH/(R*t2))
+        this.bme.humidityrelative = (vapor/sat_p2)*100
       });
 
     this.ams_subscription = timer(0, this.subInterval).pipe(

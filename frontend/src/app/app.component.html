@@ -74,13 +74,16 @@
                 <div>
                     <h2>General</h2>
                     <div>
-                        Humidity: {{ bme?.humidityrelative }}%
+                        Humidity: {{ bme?.humidity }} %
                     </div>
                     <div>
                         Pressure: {{ bme?.pressure }}
                     </div>
                     <div>
                         Temperature: {{ bme?.temp / 1000 }} &#8451;
+                    </div>
+                    <div>
+                        GPS: {{ bme?.gps }};
                     </div>
                     <div>
                         XDP throughput: {{ data_thr?.XDP / 1000 }} GB/s
