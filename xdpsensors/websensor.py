@@ -78,6 +78,8 @@ class Bme680Resource(DynamicResource):
                 #self.sensorDict[bme680_name] = {}
                 for channel in bme680.channels:
                     channel_name = channel.name.encode('utf-8')
+                    if(channel_name == "gps"):
+                        channel_value = "Hardcoded GPS data for now, needs to be udpated"
                     try:
                         channel_value = channel.get()
                     except OSError as e:
