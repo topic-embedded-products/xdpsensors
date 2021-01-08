@@ -24,7 +24,7 @@ import { AnimationBuilder } from '@angular/animations';
 
 export class AppComponent implements OnInit {
 
-  private data_url: string = "";
+  private data_url: string = "http://192.168.223.1:/";
   public video_loc: string = this.data_url+"video";
   title = 'drone-frontend';
   private sensorData: Observable<any>
@@ -83,7 +83,7 @@ export class AppComponent implements OnInit {
     this.gyroChartData = {};
 
     this.bme = {
-      humidityrelative: 13,
+      humidityrelative: 0,
       pressure: 0,
       resistance: 0,
       gps: "Testing the string",
@@ -170,7 +170,7 @@ export class AppComponent implements OnInit {
         switchMap(() => this.backend.getSensorData<BME680>(this.data_url+"bme680")))
       .subscribe(result => {
         this.bme = result;
-        var t1 = (this.bme.temp*100) + 273
+        var t1 = this.bme.temp / 1000 + 273
         var t2 = 25 + 273
             
         var	p0, deltaH, R
@@ -181,9 +181,10 @@ export class AppComponent implements OnInit {
         var sat_p1, sat_p2, vapor, rh2
         sat_p1 = p0 * Math.exp(-deltaH/(R*t1))
         sat_p2 = p0 * Math.exp(-deltaH/(R*t2))
+        vapor = sat_p1 * this.bme.humidityrelative/100
         rh2 = (vapor/sat_p2)*100
-        rh2   = Math.round(rh2*10)/10
-        this.bme.humidityrelative = rh2.toString()
+        rh2 = Math.round(rh2*10)/10
+        this.bme.humidityrelative = rh2
       });
 
     this.ams_subscription = timer(0, this.subInterval).pipe(
