@@ -170,7 +170,7 @@ export class AppComponent implements OnInit {
         switchMap(() => this.backend.getSensorData<BME680>(this.data_url+"bme680")))
       .subscribe(result => {
         this.bme = result;
-        var t1 = this.bme.temp + 273
+        var t1 = (this.bme.temp*100) + 273
         var t2 = 25 + 273
             
         var	p0, deltaH, R
@@ -178,10 +178,12 @@ export class AppComponent implements OnInit {
         deltaH = 43760
         R = 8.314
 
-        var sat_p1, sat_p2, vapor, rh2, dew
+        var sat_p1, sat_p2, vapor, rh2
         sat_p1 = p0 * Math.exp(-deltaH/(R*t1))
         sat_p2 = p0 * Math.exp(-deltaH/(R*t2))
-        this.bme.humidityrelative = (vapor/sat_p2)*100
+        rh2 = (vapor/sat_p2)*100
+        rh2   = Math.round(rh2*10)/10
+        this.bme.humidityrelative = rh2.toString()
       });
 
     this.ams_subscription = timer(0, this.subInterval).pipe(
