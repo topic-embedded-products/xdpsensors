@@ -24,7 +24,7 @@ import { AnimationBuilder } from '@angular/animations';
 
 export class AppComponent implements OnInit {
 
-  private data_url: string = "http://192.168.223.1:/";
+  private data_url: string = "";
   public video_loc: string = this.data_url+"video";
   title = 'drone-frontend';
   private sensorData: Observable<any>
@@ -170,7 +170,7 @@ export class AppComponent implements OnInit {
       .subscribe(result => {
         this.bme = result;
         var t1 = this.bme.temp / 1000 + 273
-        var t2 = 25 + 273
+        var t2 = 20 + 273
             
         var	p0, deltaH, R
         p0 = 1113360648
