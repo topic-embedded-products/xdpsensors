@@ -231,7 +231,7 @@ def parse_gps_message(message):
     output = message.split(',')
     if len(output) < 8:
         return "Problem with GPS message"
-    if output[6] = "0":
+    if output[6] == "0":
         return "GPS has no fix"
     return "GPS has fix with {} satellites. Lattitude is {} {} and Longitude is {} {}".format(output[7], print_longitude(output[2], 2), output[3], print_longitude(output[4], 3), output[5])
 
