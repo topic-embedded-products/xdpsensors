@@ -8,11 +8,13 @@ import iiosensors
 import json
 import os, time
 import subprocess
+from serial import Serial
 from time import sleep
 
 xdp_last_sample = 0
 raptor_last_sample = 0
 last_time = time.time();
+stream = Serial('/dev/ttyPS1', 9600, timeout=3)
 
 xdp_last_thr = -1
 raptor_last_thr = -1
@@ -66,6 +68,7 @@ class Bmi088AccelResource(DynamicResource):
         return bytes(app_json)
 
 
+
 class Bme680Resource(DynamicResource):
     def render_GET(self, request):
         request.setHeader("refresh", "1");
@@ -78,8 +81,6 @@ class Bme680Resource(DynamicResource):
                 #self.sensorDict[bme680_name] = {}
                 for channel in bme680.channels:
                     channel_name = channel.name.encode('utf-8')
-                    if(channel_name == "gps"):
-                        channel_value = "Hardcoded GPS data for now, needs to be udpated"
                     try:
                         channel_value = channel.get()
                     except OSError as e:
@@ -223,6 +224,26 @@ class AmsResource(DynamicResource):
         app_json = json.dumps(self.sensorDict)
         return bytes(app_json)
 
+def print_longitude(longitude, amount_first_degrees):
+    return longitude[0:amount_first_degrees].strip("0") + " degrees " + longitude[amount_first_degrees:amount_first_degrees+2] + "'" + longitude.split('.')[-1] + '"'
+
+def parse_gps_message(message):
+    output = message.split(',')
+    if len(output) < 8:
+        return "Problem with GPS message"
+    if not output[6]:
+        return "GPS has no fix"
+    return "GPS has fix with {} satellites. Lattitude is {} {} and Longitude is {} {}".format(output[7], print_longitude(output[2], 2), output[3], print_longitude(output[4], 3), output[5])
+
+def fetch_gps():
+    count = 0
+    while(count < 10):
+        readback = stream.read_until()
+        value = readback.decode('ascii', errors='ignore')
+        if 'GNGGA' in value or 'GPGGA' in value:
+            return parse_gps_message(value)
+        count = count + 1
+    return "Could not retrieve GPS information"
 
 class ThroughputResource(resource.Resource):
     def render_GET(self, request):
@@ -260,6 +281,7 @@ class ThroughputResource(resource.Resource):
         self.ByteData["XDP"] = xdp_last_thr
         self.ByteData["Raptor"] = raptor_last_thr
         self.ByteData["Time"] = diff
+        self.ByteData["gps"] = fetch_gps()
         app_json = json.dumps(self.ByteData)
         return bytes(app_json)
 
@@ -357,3 +379,4 @@ def getWebService(uri = None, port = 80, root = '/var/www'):
     root.putChild("video", File('/tmp/frame.jpg'))
     site = server.Site(root)
     return internet.TCPServer(port, site)
+

@@ -63,11 +63,11 @@ export class BackendService {
   }
 
 }
+
 export interface BME680 {
   humidityrelative: number;
   pressure: number;
   resistance: number;
-  gps: "Testing the string",
   temp: number;
 }
 
@@ -100,4 +100,5 @@ export interface Data_Througput {
   Raptor: number;
   XDP   : number;
   Time  : number;
+  gps   : string;
 }
