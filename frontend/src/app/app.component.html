@@ -83,7 +83,7 @@
                         Temperature: {{ bme?.temp / 1000 }} &#8451;
                     </div>
                     <div>
-                        GPS: {{ data_thr?.gps }}
+                        GPS: <p style="white-space: pre-wrap">{{ data_thr?.gps }}</p>
                     </div>
                     <div>
                         XDP throughput: {{ data_thr?.XDP / 1000 }} GB/s
