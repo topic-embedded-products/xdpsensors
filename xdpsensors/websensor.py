@@ -225,15 +225,15 @@ class AmsResource(DynamicResource):
         return bytes(app_json)
 
 def print_longitude(longitude, amount_first_degrees):
-    return longitude[0:amount_first_degrees].strip("0") + " degrees " + longitude[amount_first_degrees:amount_first_degrees+2] + "'" + longitude.split('.')[-1] + '"'
+    return longitude[0:amount_first_degrees].strip("0") + "." + longitude[amount_first_degrees:amount_first_degrees+2]
 
 def parse_gps_message(message):
     output = message.split(',')
     if len(output) < 8:
         return "Problem with GPS message"
     if output[6] == "0":
-        return "GPS has no fix"
-    return "GPS has fix with {} satellites. Lattitude is {} {} and Longitude is {} {}".format(output[7], print_longitude(output[2], 2), output[3], print_longitude(output[4], 3), output[5])
+        return " has no fix"
+    return "fix with {} satellites. Lat: {}, Long: {}".format(output[7], print_longitude(output[2], 2), print_longitude(output[4], 3))
 
 def fetch_gps():
     count = 0
