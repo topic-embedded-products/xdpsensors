@@ -5,6 +5,7 @@ from twisted.web.server import Site
 from twisted.web.static import File
 import iio
 import iiosensors
+import wificonf
 import json
 import os, time
 import subprocess
@@ -377,6 +378,7 @@ def getWebService(uri = None, port = 80, root = '/var/www'):
     root.putChild("cam_control", CamControlResource())
     root.putChild("throughput", ThroughputResource())
     root.putChild("video", File('/tmp/frame.jpg'))
+    root.putChild("wifi", wificonf.WifiResource())
     site = server.Site(root)
     return internet.TCPServer(port, site)
 
