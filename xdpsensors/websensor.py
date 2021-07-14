@@ -271,8 +271,18 @@ class CachedFile(static.File):
         request.setHeader(b"cache-control", b"max-age=3600, public")
         return static.File.render_GET(self, request)
 
+# Make sure /tmp/frame.jpg' exists, otherwise the web page will look horrible
+def create_frame_file():
+    if os.path.exists('/tmp/frame.jpg'):
+        return
+    try:
+        import shutil
+        shutil.copyfile('/var/www/camera.jpg', '/tmp/frame.jpg')
+    except:
+        pass
 
 def getWebService(uri = None, port = 80, root = '/var/www'):
+    create_frame_file()
     root = CachedFile(root)
     ctx = SensorContext(uri)
     for s in (ctx.sensors.keys()):
