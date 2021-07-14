@@ -4,13 +4,12 @@ from twisted.application import internet
 from twisted.web.server import Site
 from twisted.web.static import File
 import iio
-import iiosensors
-import wificonf
+from . import iiosensors
+from . import wificonf
 import json
 import os, time
 import subprocess
 from serial import Serial
-from time import sleep
 
 xdp_last_sample = 0
 raptor_last_sample = 0
@@ -42,54 +41,46 @@ class DynamicResource(resource.Resource):
             return self
         return resource.Resource.getChild(self, name, request)
     def set_default_headers(self):
-        self.set_header("Access-Control-Allow-Origin", "*")
-        self.set_header("Access-Control-Allow-Headers", "x-requested-with")
-        self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+        self.set_header(b"Access-Control-Allow-Origin", b"*")
+        self.set_header(b"Access-Control-Allow-Headers", b"x-requested-with")
+        self.set_header(b'Access-Control-Allow-Methods', b'POST, GET, OPTIONS')
 
 
 class Bmi088AccelResource(DynamicResource):
     def render_GET(self, request):
-        request.setHeader("refresh", "1");
+        request.setHeader(b"refresh", b"1");
         request.responseHeaders.addRawHeader(b"content-type", b"application/json")
-        request.setHeader('Access-Control-Allow-Origin', '*')
+        request.setHeader(b'Access-Control-Allow-Origin', b'*')
         for accel in self.xdp_sensors:
-            accel_name = accel.name.encode('utf-8')
-            if accel_name == 'bmi088_accel':
+            if accel.name == 'bmi088_accel':
                 self.sensorDict = {}
                 #self.sensorDict[accel_name] = {}
                 for channel in accel.channels:
-                    channel_name = channel.name.encode('utf-8')
                     try:
                         channel_value = channel.get()
                     except OSError as e:
                         channel_value = e.strerror
-                    self.sensorDict[channel_name] = channel_value
-                    #self.sensorDict[accel_name][channel_name] = channel_value
+                    self.sensorDict[channel.name] = channel_value
         app_json = json.dumps(self.sensorDict)
-        return bytes(app_json)
-
+        return app_json.encode('utf-8')
 
 
 class Bme680Resource(DynamicResource):
     def render_GET(self, request):
-        request.setHeader("refresh", "1");
+        request.setHeader(b"refresh", b"1");
         request.responseHeaders.addRawHeader(b"content-type", b"application/json")
-        request.setHeader('Access-Control-Allow-Origin', '*')
+        request.setHeader(b'Access-Control-Allow-Origin', b'*')
         for bme680 in self.xdp_sensors:
-            bme680_name = bme680.name.encode('utf-8')
-            if bme680_name == 'bme680':
+            if bme680.name == 'bme680':
                 self.sensorDict = {}
-                #self.sensorDict[bme680_name] = {}
                 for channel in bme680.channels:
-                    channel_name = channel.name.encode('utf-8')
                     try:
                         channel_value = channel.get()
                     except OSError as e:
                         channel_value = e.strerror
-                    self.sensorDict[channel_name] = channel_value
-                    #self.sensorDict[bme680_name][channel_name] = channel_value
+                    self.sensorDict[channel.name] = channel_value
         app_json = json.dumps(self.sensorDict)
-        return bytes(app_json)
+        return app_json.encode('utf-8')
 
 
 class Bmm150Resource(DynamicResource):
@@ -98,20 +89,16 @@ class Bmm150Resource(DynamicResource):
         request.responseHeaders.addRawHeader(b"content-type", b"application/json")
         request.setHeader('Access-Control-Allow-Origin', '*')
         for bmm150 in self.xdp_sensors:
-            bmm150_name = bmm150.name.encode('utf-8')
-            if bmm150_name == 'bmm150_magn':
+            if bmm150.name == 'bmm150_magn':
                 self.sensorDict = {}
-                #self.sensorDict[bmm150_name] = {}
                 for channel in bmm150.channels:
-                    channel_name = channel.name.encode('utf-8')
                     try:
                         channel_value = channel.get()
                     except OSError as e:
                         channel_value = e.strerror
-                    self.sensorDict[channel_name] = channel_value
-                    #self.sensorDict[bmm150_name][channel_name] = channel_value
+                    self.sensorDict[channel.name] = channel_value
         app_json = json.dumps(self.sensorDict)
-        return bytes(app_json)
+        return app_json.encode('utf-8')
 
 
 class Bmi088GyroResource(DynamicResource):
@@ -120,20 +107,16 @@ class Bmi088GyroResource(DynamicResource):
         request.responseHeaders.addRawHeader(b"content-type", b"application/json")
         request.setHeader('Access-Control-Allow-Origin', '*')
         for gyro in self.xdp_sensors:
-            gyro_name = gyro.name.encode('utf-8')
-            if gyro_name == 'bmi088_gyro':
+            if gyro.name == 'bmi088_gyro':
                 self.sensorDict = {}
-                #self.sensorDict[gyro_name] = {}
                 for channel in gyro.channels:
-                    channel_name = channel.name.encode('utf-8')
                     try:
                         channel_value = channel.get()
                     except OSError as e:
                         channel_value = e.strerror
-                    #self.sensorDict[gyro_name][channel_name] = channel_value
-                    self.sensorDict[channel_name] = channel_value
+                    self.sensorDict[channel.name] = channel_value
         app_json = json.dumps(self.sensorDict)
-        return bytes(app_json)
+        return app_json.encode('utf-8')
 
 
 class MotorSpeedResource(DynamicResource):
@@ -150,7 +133,6 @@ class MotorSpeedResource(DynamicResource):
         request.setHeader('Access-Control-Allow-Origin', '*')
         count = 0
         for item in request.args:
-            sleep(0.1)
             if item == "motorSpeed_1":
                 speedArray = request.args.values()
                 lv_speed = speedArray[count][0]
@@ -206,24 +188,20 @@ class MotorSpeedResource(DynamicResource):
 
 class AmsResource(DynamicResource):
     def render_GET(self, request):
-        request.setHeader("refresh", "1");
+        request.setHeader(b"refresh", b"1");
         request.responseHeaders.addRawHeader(b"content-type", b"application/json")
-        request.setHeader('Access-Control-Allow-Origin', '*')
+        request.setHeader(b'Access-Control-Allow-Origin', b'*')
         for ams in self.xdp_sensors:
-            ams_name = ams.name.encode('utf-8')
-            if ams_name == 'ams':
+            if ams.name == 'ams':
                 self.sensorDict = {}
-                #self.sensorDict[ams_name] = {}
                 for channel in ams.channels:
-                    channel_name = channel.name.encode('utf-8')
                     try:
                         channel_value = channel.get()
                     except OSError as e:
                         channel_value = e.strerror
-                    #self.sensorDict[ams_name][channel_name] = channel_value
-                    self.sensorDict[channel_name] = channel_value
+                    self.sensorDict[channel.name] = channel_value
         app_json = json.dumps(self.sensorDict)
-        return bytes(app_json)
+        return app_json.encode('utf-8')
 
 def print_longitude(longitude, amount_first_degrees):
     return longitude[0:amount_first_degrees].strip("0") + "." + longitude[amount_first_degrees:amount_first_degrees+2]
@@ -284,7 +262,7 @@ class ThroughputResource(resource.Resource):
         self.ByteData["Time"] = diff
         self.ByteData["gps"] = fetch_gps()
         app_json = json.dumps(self.ByteData)
-        return bytes(app_json)
+        return app_json.encode('utf-8')
 
 
 class CamControlResource(resource.Resource):
@@ -362,23 +340,22 @@ class CamControlResource(resource.Resource):
 
 class CachedFile(static.File):
     def render_GET(self, request):
-        request.setHeader("cache-control", "max-age=3600, public")
+        request.setHeader(b"cache-control", b"max-age=3600, public")
         return static.File.render_GET(self, request)
 
 
 def getWebService(uri = None, port = 80, root = '/var/www'):
     root = CachedFile(root)
-    root.putChild("dynamic", DynamicResource(uri))
-    root.putChild("bmi088_accel", Bmi088AccelResource(uri))
-    root.putChild("bme680", Bme680Resource(uri))
-    root.putChild("bmi088_gyro", Bmi088GyroResource(uri))
-    root.putChild("bmm150_magn", Bmm150Resource(uri))
-    root.putChild("ams", AmsResource(uri))
-    root.putChild("motorspeed", MotorSpeedResource(uri))
-    root.putChild("cam_control", CamControlResource())
-    root.putChild("throughput", ThroughputResource())
-    root.putChild("video", File('/tmp/frame.jpg'))
-    root.putChild("wifi", wificonf.WifiResource())
+    root.putChild(b"dynamic", DynamicResource(uri))
+    root.putChild(b"bmi088_accel", Bmi088AccelResource(uri))
+    root.putChild(b"bme680", Bme680Resource(uri))
+    root.putChild(b"bmi088_gyro", Bmi088GyroResource(uri))
+    root.putChild(b"bmm150_magn", Bmm150Resource(uri))
+    root.putChild(b"ams", AmsResource(uri))
+    root.putChild(b"motorspeed", MotorSpeedResource(uri))
+    root.putChild(b"cam_control", CamControlResource())
+    root.putChild(b"throughput", ThroughputResource())
+    root.putChild(b"video", File(b'/tmp/frame.jpg'))
+    root.putChild(b"wifi", wificonf.WifiResource())
     site = server.Site(root)
     return internet.TCPServer(port, site)
-
